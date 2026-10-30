@@ -1,0 +1,16 @@
+import type { SceneModel } from '@graphlearning/graphl-flow'
+
+// Scene registry. Sections reference scenes by id; the id is the key here. One Record per course
+// folder (mirroring src/content); a duplicate id THROWS rather than letting one shadow another.
+const GROUPS: Record<string, SceneModel>[] = []
+
+export const SCENES: Record<string, SceneModel> = {}
+for (const group of GROUPS)
+  for (const [id, scene] of Object.entries(group)) {
+    if (id in SCENES) throw new Error(`scene id "${id}" is registered twice`)
+    SCENES[id] = scene
+  }
+
+export function getScene(id: string): SceneModel | undefined {
+  return SCENES[id]
+}

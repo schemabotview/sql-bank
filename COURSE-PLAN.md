@@ -50,17 +50,18 @@ one section is still there in the next. No rebuilds, no migrations.
 
 ```
 spine/<course>/<NN-step>/
-  step.sql       what the team writes this step (editor; run with \i), when the step has one
-  session.txt    the real psql transcript (terminal)
-  step.json      options: {"timeline": true}, {"volatile": true}, ...
+  step.json      options: {"timeline": true}, {"volatile": true}
+  files/<path>   files this step adds to syndica-db/ (editor), e.g. files/build/03-foreign-keys.sql
+  session.txt    the real psql transcript (console); its prompt rows are the input
+  timeline.txt   a two-session step instead -> session-a.txt + session-b.txt
 ```
 
-The explorer shows `syndica-db/` gaining one file per step (`build/03-foreign-keys.sql`,
-`queries/statement.sql`, …). Files are only added, never edited.
+The explorer shows `syndica-db/` as every file added up to the step (derived, never typed). Files are
+only added, never edited.
 
-Verification: `spine.mjs` creates a fresh `syndica` and replays every step in course order against
-it, diffing each transcript (`--write` re-captures). At the end of each course it saves a checkpoint
-(`CREATE DATABASE syndica_after_<course> TEMPLATE syndica`), so `spine.mjs <course>` starts from the
+Verification: `scripts/spine.py` creates a fresh `syndica` and replays every step in course order
+against it, diffing each transcript (`--write` re-captures). After each course it saves a checkpoint
+(`CREATE DATABASE syndica_after_<course> TEMPLATE syndica`), so `spine.py <course>` starts from the
 previous course's checkpoint. A full replay is the gate before recording.
 
 Rules:
@@ -216,9 +217,9 @@ spatial. Candidate follow-up: "Running Syndica in production".
 
 ## Build order
 
-1. Infra: pinned PostgreSQL 18 + setup script; `spine.mjs` (continuous replay, checkpoints, timeline
-   steps); frames ported from python-expense-tracker; checks. Engine first: graphl-flow must draw
-   psql prompts (`syndica=>`, `=*>`, `=!>`) — today it knows only `$ `.
+1. Infra — **done (2026-10-30)**: setup script, `spine.py` (continuous replay, checkpoints, timeline
+   steps), IDE + timeline frames, checks; graphl-flow 0.8.0 draws psql prompts (awaiting publish).
+   PostgreSQL 18 itself awaits network access to apt.postgresql.org.
 2. Pilot: `start` + `design` + `build`, and a spike of the timeline frame → owner review.
 3. Courses 4–10 in order, each rendered, reviewed and frozen, then narrated.
 4. Record all 10, assemble the one video.

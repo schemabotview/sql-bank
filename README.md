@@ -11,4 +11,14 @@ plan on screen is replayed on a real server.
 
 Scenes render with `@graphlearning/graphl-flow`; the app shell is `@graphlearning/shell`.
 
-**Status:** plan approved; nothing authored yet.
+```sh
+npm install
+npm run dev                                   # the app on :5173
+sudo bash scripts/setup-postgres.sh           # PostgreSQL 18 + the dbteam login (Debian/Ubuntu)
+sudo python3 scripts/spine.py [course] [--write]   # replay the spine on one continuous database
+npm run check                                 # content + render at 4K
+npm run shots -- <course>                     # PNGs in out/shots/, then look
+npm run build
+```
+
+**Status:** scaffold in place; nothing authored yet.

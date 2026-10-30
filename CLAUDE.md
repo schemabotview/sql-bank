@@ -16,8 +16,18 @@ and `db/verify` idea are worth porting, its scenes are not.
 
 ## Status
 
-Plan approved (10 courses, 69 sections). Nothing authored. Next: infra, then the pilot
-(`start`, `design`, `build` + a timeline-frame spike).
+Plan approved (10 courses, 69 sections). **Scaffold in place, nothing authored.** Built and verified:
+the app skeleton (empty registries), `spine.py` (continuous replay, checkpoints, timelines), the IDE
+and timeline frames, and the checks — validated end to end on throwaway steps, then removed.
+
+Two blockers before authoring:
+1. **PostgreSQL 18 is not installable here**: the environment's network policy denies
+   `apt.postgresql.org`. Allow it, then run `scripts/setup-postgres.sh` (also usable as the cloud
+   setup script). `spine.py` refuses to write transcripts from any other major.
+2. **graphl-flow 0.8.0 is not on npm yet** (psql prompts, timeline-safe dedent). `package.json` pins
+   `^0.7.0` so the repo installs; psql rows render as plain output until it is bumped to `^0.8.0`.
+
+Next: the pilot (`start`, `design`, `build` + the first timeline).
 
 ## Route contract
 
@@ -32,32 +42,51 @@ never timings.
 
 ## The spine: one continuous database
 
-`spine/<course>/<NN-step>/` = `step.sql` (optional, the editor) + `session.txt` (the psql
-transcript) + `step.json`. All steps run in course order against ONE database, `syndica`; its state
-carries forward. `spine.mjs` replays from a fresh database (or from the previous course's checkpoint
-`syndica_after_<course>`) and diffs every transcript; `--write` re-captures.
+All steps run in course order against ONE database, `syndica`; its state carries forward.
+`scripts/spine.py` (run as root; read its docstring) replays from a fresh database — or from the
+checkpoint `syndica_after_<course>` the previous course left — and diffs every transcript; `--write`
+re-captures and regenerates `src/spine.gen.ts`.
 
-- A step keeps its changes on purpose, or rolls back on screen. Never leave accidental state.
+```
+spine/<course>/<NN-step>/
+  step.json      {} | {"timeline": true} | {"volatile": true}
+  files/<path>   files this step ADDS to syndica-db/ (the editor shows them)
+  session.txt    the psql transcript (the console)        — or, for a timeline:
+  timeline.txt   moments `A <prompt> sql` / `B <prompt> sql` -> session-a.txt + session-b.txt
+```
+
+- **Input is the transcript's prompt rows.** To author, write the rows you want typed (any prompt
+  text), run `--write`; the runner fills in real prompts and output. A session that does not start
+  with a shell row starts psql silently, so the pane shows only SQL.
+- A step keeps its changes on purpose, or rolls back on screen. The runner fails a step that ends
+  inside a transaction, a typed line that wraps, and a file added twice.
 - Non-bank demos live in `sandbox` and are dropped on screen.
-- No clock: explicit timestamps; business date 2026-10-31; nothing depends on `now()`.
-- **Scenes read values from `session.txt`, never type them** — ids and counts move when an earlier
-  step changes.
+- No clock: explicit timestamps; business date 2026-10-31; nothing depends on `now()`. The runner
+  creates `syndica` with timezone Europe/London, datestyle ISO, `lc_messages` C, deadlock_timeout 1s.
+- **Scenes read the spine through `src/scenes/spine.ts`** (`session`, `file`, `tree`, `step`) — never
+  type a value from a transcript; find lines with `lineOf`.
 - Author in course order. An approved course is frozen; editing it means a full replay and a review
   of every later transcript that moved.
-- `syndica-db/` files are only added, never edited.
-- Roles are cluster-wide: a fresh replay drops `syndica_*` roles too.
+- Roles are cluster-wide: a replay drops `syndica_%` roles first; `dbteam` is the base role.
+- A blocked statement in a timeline is CONFIRMED waiting on a lock (`pg_stat_activity`) before the
+  timeline moves on; its output lands in the moment that released it; panes are padded so a row is
+  one moment in both.
 
 ## Frames
 
-IDE (explorer | editor 80 cols over psql terminal | fixed side pane), concept (◆), timeline
-(session A | session B | side pane). Every IDE side pane carries a diagram, not bullets. No edges
-between panes. Never write `x`/`y`.
+`src/scenes/ide.ts`: `ideFrame` — explorer | editor (80 cols, 23 rows) over a psql console (80 cols,
+13 rows — fold a long session with `sessionShow`, never retype it) | fixed side pane; and
+`timelineFrame` — session A | session B (60 cols each) | side pane, three equal columns whose box equals
+the IDE template's, so every frame shares one fit. Concept frames (◆) are free-form. Every side pane
+carries a diagram, not bullets. No edges between panes. Never write `x`/`y`.
+Frames pass spine text through `verbatim` (a leading newline graphl-flow's dedent drops) so a
+transcript that starts with blank rows keeps them.
 
 ## Checks, before handing over
 
 ```sh
 npm run build && npx tsc --noEmit && npm run check   # content + render (4K)
-npm run check:spine
+sudo npm run check:spine                             # or: python3 scripts/spine.py [course] [--write]
 npm run shots -- <course>                            # then LOOK
 ```
 

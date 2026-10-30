@@ -21,4 +21,4 @@ npm run shots -- <course>                     # PNGs in out/shots/, then look
 npm run build
 ```
 
-**Status:** pilot authored — `start`, `design`, `build` (20 sections), awaiting review.
+**Status:** all 10 courses authored (69 sections), awaiting review. No audio yet.

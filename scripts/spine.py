@@ -114,8 +114,12 @@ def server_major():
 
 
 def drop_course_roles():
+    # A role's grants live in every database that names it — checkpoints included (syndica_after_secure
+    # holds the secure course's grants) — so clear them everywhere before the role can be dropped.
+    dbs = admin("SELECT datname FROM pg_database WHERE datname LIKE 'syndica%'").split()
     for role in admin("SELECT rolname FROM pg_roles WHERE rolname LIKE 'syndica\\_%'").split():
-        admin(f'DROP OWNED BY "{role}" CASCADE', db=DB, check=False)
+        for db in dbs:
+            admin(f'DROP OWNED BY "{role}" CASCADE', db=db, check=False)
         admin(f'DROP ROLE "{role}"')
 
 

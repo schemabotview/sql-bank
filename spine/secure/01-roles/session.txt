@@ -1,0 +1,17 @@
+dbteam@syndica:~/syndica-db$ psql -q -U postgres -d syndica
+syndica=# \i roles/01-roles.sql
+syndica=# \i roles/matrix.sql
+        role        |     table      | sel | ins | upd 
+--------------------+----------------+-----+-----+-----
+ syndica_app        | core.accounts  | f   | f   | f
+ syndica_app        | core.customers | f   | f   | f
+ syndica_app        | core.postings  | f   | f   | f
+ syndica_auditor    | core.accounts  | t   | f   | f
+ syndica_auditor    | core.customers | t   | f   | f
+ syndica_auditor    | core.postings  | t   | f   | f
+ syndica_teller_lds | core.accounts  | t   | f   | f
+ syndica_teller_lds | core.customers | t   | f   | f
+ syndica_teller_lds | core.postings  | f   | f   | f
+(9 rows)
+
+syndica=# \q

@@ -1,6 +1,6 @@
 # Building Syndica Bank's database: SQL from beginner to professional — plan
 
-**Status: v1 plan, approved for size (2026-10-30).** Pilot authored (2026-10-30): `start`, `design`, `build` — awaiting owner review.
+**Status: all 10 courses authored (2026-10-30)** — 69 sections, awaiting owner review. Where authoring departed from v1, the table rows below say what was built.
 
 ## The idea
 
@@ -154,7 +154,7 @@ Rules:
 | # | Section | Side pane |
 | --- | --- | --- |
 | 1 | CTEs | a monthly statement in stages |
-| 2 | Recursive CTEs | employee tree; transfer chain A→B→C→A stopped by `CYCLE` |
+| 2 | Recursive CTEs | transfer chain A→B→C→A stopped by `CYCLE` (the employee tree was dropped: no `hr` schema was needed) |
 | 3 | Windows: the running balance | partitions, the window moving down rows |
 | 4 | Frames | `ROWS` vs `RANGE` on same-timestamp postings |
 | 5 | Ranking, top-N, dedup | rank vs dense_rank vs row_number |
@@ -167,9 +167,9 @@ Rules:
 | # | Section | Side pane |
 | --- | --- | --- |
 | 1 | Affected rows first, then `UPDATE` | predicted vs actual count; rollback; why money is never updated |
-| 2 | `DELETE` vs closing an account | soft close vs hard delete; retention |
-| 3 | `INSERT … SELECT` | month-end interest postings |
-| 4 | Upsert vs `MERGE` | the card settlement file, `\copy` to staging, then matched |
+| 2 | `DELETE` vs closing an account | the confirmed duplicate Priya Shah deleted; an account with history refused, stays closed |
+| 3 | `INSERT … SELECT` | Amelia's missing holder row, ids looked up by account number and email |
+| 4 | Upsert vs `MERGE` | the property team's branch list: `MERGE … RETURNING merge_action()` vs `ON CONFLICT` |
 | 5 | Reversals | original + reversal = net zero, history intact |
 | 6 | Triggers and the audit log | one statement → its side effects (`ALTER` as a tool) |
 
@@ -177,7 +177,7 @@ Rules:
 
 | # | Section | Side pane |
 | --- | --- | --- |
-| 1 | Invariants, ACID, `BEGIN`/`COMMIT`/savepoints | invariant → what protects it; the `=!>` prompt |
+| 1 | Invariants, ACID, `BEGIN`/`COMMIT`/savepoints | ACID; a savepoint; the `=!>` prompt (adds `core.balance()`, `core.withdraw()`) |
 | 2 | ◆ MVCC (PG) | row versions, snapshots, why `VACUUM` exists |
 | 3 | The incident: a lost update | timeline: two ATMs both read 500 |
 | 4 | Isolation levels and write skew | joint-account overdraft; `SERIALIZABLE` refuses (40001) |
@@ -194,7 +194,7 @@ Rules:
 | 3 | ◆ How a B-tree index finds rows | root → leaf → heap |
 | 4 | Composite indexes, index-friendly predicates | `(account_id, posted_at)`; `date(col)` vs range |
 | 5 | Partial and covering indexes; the write cost | buffers before/after; inserts with and without |
-| 6 | Materialized views and `pg_stat_statements` | freshness vs speed; the top queries |
+| 6 | Materialized views | stale until `REFRESH … CONCURRENTLY`; `pg_stat_statements` described, not run (its timings vary per replay) |
 
 **10. `secure` · Secure it, and go live · 6**
 

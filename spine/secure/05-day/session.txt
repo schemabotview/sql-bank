@@ -1,0 +1,20 @@
+syndica=> \set QUIET on
+syndica=> SET ROLE syndica_app;
+syndica=> SELECT core.transfer('req-9001', 1019, 1021, 40.00);
+ transfer 
+----------
+     5044
+(1 row)
+
+syndica=> SELECT account_id, balance FROM core.account_balance
+syndica->  WHERE account_id IN (1019, 1021) ORDER BY 1;
+ account_id | balance 
+------------+---------
+       1019 |  527.00
+       1021 |  977.40
+(2 rows)
+
+syndica=> INSERT INTO core.postings (txn_id, account_id, amount)
+syndica->   VALUES (5001, 1021, 1000000);
+ERROR:  permission denied for table postings
+syndica=> RESET ROLE;

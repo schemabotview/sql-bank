@@ -1,0 +1,22 @@
+syndica=> \set QUIET on
+syndica=> \i roles/03-teller.sql
+syndica=> SET ROLE syndica_teller_lds;
+syndica=> SELECT count(*) AS accounts, string_agg(DISTINCT branch_code, ',')
+syndica->   FROM core.accounts;
+ accounts | string_agg 
+----------+------------
+        9 | LDS
+(1 row)
+
+syndica=> SELECT full_name, phone FROM core.customer_directory
+syndica->  ORDER BY customer_id LIMIT 3;
+   full_name   |   phone    
+---------------+------------
+ Amelia Hughes | ******0101
+ Daniel Okafor | ******0102
+ Grace Lin     | 
+(3 rows)
+
+syndica=> SELECT phone FROM core.customers LIMIT 1;
+ERROR:  permission denied for table customers
+syndica=> RESET ROLE;

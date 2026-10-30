@@ -1,0 +1,22 @@
+syndica=> \i roles/02-least-privilege.sql
+REVOKE
+REVOKE
+ALTER FUNCTION
+REVOKE
+GRANT
+GRANT
+syndica=> UPDATE core.postings SET amount = 0 WHERE posting_id = 9001;
+ERROR:  permission denied for table postings
+syndica=> SET ROLE syndica_app;
+SET
+syndica=> INSERT INTO core.postings (txn_id, account_id, amount)
+syndica->   VALUES (5001, 1011, 1.00);
+ERROR:  permission denied for table postings
+syndica=> SELECT balance FROM core.account_balance WHERE account_id = 1011;
+ balance 
+---------
+ 2273.95
+(1 row)
+
+syndica=> RESET ROLE;
+RESET

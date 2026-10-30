@@ -1,0 +1,24 @@
+syndica=> \set input 'x'' OR ''x''=''x'
+syndica=> \echo :input
+x' OR 'x'='x
+syndica=> SELECT format('SELECT count(*) FROM core.transactions '
+syndica(>               'WHERE reference = ''%s''', :'input') \gexec
+ count 
+-------
+    40
+(1 row)
+
+syndica=> SELECT format('SELECT count(*) FROM core.transactions '
+syndica(>               'WHERE reference = %L', :'input') \gexec
+ count 
+-------
+     0
+(1 row)
+
+syndica=> \i roles/04-search.sql
+PREPARE
+syndica=> EXECUTE search(:'input');
+ count 
+-------
+     0
+(1 row)

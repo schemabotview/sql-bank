@@ -7,6 +7,7 @@ import { analyse } from './analyse'
 import { change } from './change'
 import { concurrency } from './concurrency'
 import { perform } from './perform'
+import { secure } from './secure'
 import type { Course, Section } from './types'
 
 // Course registry, in COURSE-PLAN.md order. A course is registered here only once it is authored.
@@ -20,6 +21,7 @@ export const COURSES: Record<string, Course> = {
   [change.id]: change,
   [concurrency.id]: concurrency,
   [perform.id]: perform,
+  [secure.id]: secure,
 }
 
 export type { Course, Section }

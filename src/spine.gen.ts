@@ -116,6 +116,16 @@ import s56_session from '../spine/perform/05-covering/session.txt?raw'
 import f56_0 from '../spine/perform/05-covering/files/perform/05-covering.sql?raw'
 import s57_session from '../spine/perform/06-matview/session.txt?raw'
 import f57_0 from '../spine/perform/06-matview/files/perform/06-daily.sql?raw'
+import s58_session from '../spine/secure/01-roles/session.txt?raw'
+import f58_0 from '../spine/secure/01-roles/files/roles/01-roles.sql?raw'
+import f58_1 from '../spine/secure/01-roles/files/roles/matrix.sql?raw'
+import s59_session from '../spine/secure/02-least/session.txt?raw'
+import f59_0 from '../spine/secure/02-least/files/roles/02-least-privilege.sql?raw'
+import s60_session from '../spine/secure/03-rls/session.txt?raw'
+import f60_0 from '../spine/secure/03-rls/files/roles/03-teller.sql?raw'
+import s61_session from '../spine/secure/04-injection/session.txt?raw'
+import f61_0 from '../spine/secure/04-injection/files/roles/04-search.sql?raw'
+import s62_session from '../spine/secure/05-day/session.txt?raw'
 
 export interface Step { session?: string; "session-a"?: string; "session-b"?: string; files: Record<string, string> }
 
@@ -179,4 +189,9 @@ export const STEPS: Record<string, Step> = {
   "perform/04-composite": { "session": s55_session, files: { "perform/04-composite.sql": f55_0 } },
   "perform/05-covering": { "session": s56_session, files: { "perform/05-covering.sql": f56_0 } },
   "perform/06-matview": { "session": s57_session, files: { "perform/06-daily.sql": f57_0 } },
+  "secure/01-roles": { "session": s58_session, files: { "roles/01-roles.sql": f58_0, "roles/matrix.sql": f58_1 } },
+  "secure/02-least": { "session": s59_session, files: { "roles/02-least-privilege.sql": f59_0 } },
+  "secure/03-rls": { "session": s60_session, files: { "roles/03-teller.sql": f60_0 } },
+  "secure/04-injection": { "session": s61_session, files: { "roles/04-search.sql": f61_0 } },
+  "secure/05-day": { "session": s62_session, files: {  } },
 }

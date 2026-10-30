@@ -1,0 +1,20 @@
+syndica=> \set VERBOSITY terse
+syndica=> \i concurrency/07-transfer.sql
+ALTER TABLE
+CREATE FUNCTION
+syndica=> SELECT core.transfer('req-7781', 1011, 1012, 25.00);
+ transfer 
+----------
+     5042
+(1 row)
+
+syndica=> SELECT core.transfer('req-7781', 1011, 1012, 25.00);
+ERROR:  duplicate key value violates unique constraint "transactions_request_id_
+key"
+syndica=> SELECT core.transfer('req-7782', 1016, 1011, 1000.00);
+ERROR:  insufficient funds: 404.50 available
+syndica=> SELECT core.balance(1011), core.balance(1012);
+ balance | balance 
+---------+---------
+ 2273.95 | 1601.50
+(1 row)

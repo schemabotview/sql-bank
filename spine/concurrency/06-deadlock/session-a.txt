@@ -1,0 +1,30 @@
+syndica=> \set VERBOSITY terse
+
+syndica=> BEGIN;
+BEGIN
+
+
+syndica=*> SELECT account_no FROM core.accounts
+syndica-*> WHERE account_id = 1011 FOR UPDATE;
+ account_no 
+------------
+ SY40000011
+(1 row)
+
+
+
+
+
+
+
+
+syndica=*> SELECT account_no FROM core.accounts
+syndica-*> WHERE account_id = 1012 FOR UPDATE;
+
+ account_no 
+------------
+ SY40000012
+(1 row)
+
+syndica=*> COMMIT;
+COMMIT

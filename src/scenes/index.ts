@@ -6,10 +6,11 @@ import { queryScenes } from './query'
 import { combineScenes } from './combine'
 import { analyseScenes } from './analyse'
 import { changeScenes } from './change'
+import { concurrencyScenes } from './concurrency'
 
 // Scene registry. Sections reference scenes by id; the id is the key here. One Record per course
 // folder (mirroring src/content); a duplicate id THROWS rather than letting one shadow another.
-const GROUPS: Record<string, SceneModel>[] = [startScenes, designScenes, buildScenes, queryScenes, combineScenes, analyseScenes, changeScenes]
+const GROUPS: Record<string, SceneModel>[] = [startScenes, designScenes, buildScenes, queryScenes, combineScenes, analyseScenes, changeScenes, concurrencyScenes]
 
 export const SCENES: Record<string, SceneModel> = {}
 for (const group of GROUPS)

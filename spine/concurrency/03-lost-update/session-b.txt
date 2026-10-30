@@ -1,0 +1,27 @@
+
+
+syndica=> BEGIN;
+BEGIN
+
+
+
+
+
+
+
+syndica=*> SELECT overdraft_limit FROM core.accounts
+syndica-*> WHERE account_id = 1012;
+ overdraft_limit 
+-----------------
+            0.00
+(1 row)
+
+
+
+
+syndica=*> UPDATE core.accounts SET overdraft_limit = 100
+syndica-*> WHERE account_id = 1012;
+UPDATE 1
+
+syndica=*> COMMIT;
+COMMIT

@@ -1,0 +1,27 @@
+syndica=> SELECT xmin, xmax, ctid, phone FROM core.customers
+syndica->  WHERE customer_id = 3;
+ xmin | xmax | ctid  | phone 
+------+------+-------+-------
+ 1239 |    0 | (0,3) | 
+(1 row)
+
+syndica=> BEGIN;
+BEGIN
+syndica=*> UPDATE core.customers SET phone = '+44 7700 900103'
+syndica-*>  WHERE customer_id = 3;
+UPDATE 1
+syndica=*> SELECT xmin, xmax, ctid, phone FROM core.customers
+syndica-*>  WHERE customer_id = 3;
+ xmin | xmax |  ctid  |      phone      
+------+------+--------+-----------------
+ 1496 |    0 | (0,19) | +44 7700 900103
+(1 row)
+
+syndica=*> ROLLBACK;
+ROLLBACK
+syndica=> SELECT xmin, xmax, ctid, phone FROM core.customers
+syndica->  WHERE customer_id = 3;
+ xmin | xmax | ctid  | phone 
+------+------+-------+-------
+ 1239 | 1496 | (0,3) | 
+(1 row)

@@ -1,0 +1,14 @@
+A x=> \set VERBOSITY terse
+B x=> \set VERBOSITY terse
+A x=> BEGIN;
+B x=> BEGIN;
+A x=> SELECT account_no FROM core.accounts
+A x-> WHERE account_id = 1011 FOR UPDATE;
+B x=> SELECT account_no FROM core.accounts
+B x-> WHERE account_id = 1012 FOR UPDATE;
+A x=> SELECT account_no FROM core.accounts
+A x-> WHERE account_id = 1012 FOR UPDATE;
+B x=> SELECT account_no FROM core.accounts
+B x-> WHERE account_id = 1011 FOR UPDATE;
+A x=> COMMIT;
+B x=> ROLLBACK;

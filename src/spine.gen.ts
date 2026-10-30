@@ -90,6 +90,19 @@ import s43_session from '../spine/change/05-reversal/session.txt?raw'
 import f43_0 from '../spine/change/05-reversal/files/changes/05-refund.sql?raw'
 import s44_session from '../spine/change/06-audit/session.txt?raw'
 import f44_0 from '../spine/change/06-audit/files/changes/06-audit.sql?raw'
+import s45_session from '../spine/concurrency/01-transactions/session.txt?raw'
+import f45_0 from '../spine/concurrency/01-transactions/files/concurrency/01-functions.sql?raw'
+import s46_session from '../spine/concurrency/02-mvcc/session.txt?raw'
+import s47_session_a from '../spine/concurrency/03-lost-update/session-a.txt?raw'
+import s47_session_b from '../spine/concurrency/03-lost-update/session-b.txt?raw'
+import s48_session_a from '../spine/concurrency/04-isolation/session-a.txt?raw'
+import s48_session_b from '../spine/concurrency/04-isolation/session-b.txt?raw'
+import s49_session_a from '../spine/concurrency/05-locks/session-a.txt?raw'
+import s49_session_b from '../spine/concurrency/05-locks/session-b.txt?raw'
+import s50_session_a from '../spine/concurrency/06-deadlock/session-a.txt?raw'
+import s50_session_b from '../spine/concurrency/06-deadlock/session-b.txt?raw'
+import s51_session from '../spine/concurrency/07-transfer/session.txt?raw'
+import f51_0 from '../spine/concurrency/07-transfer/files/concurrency/07-transfer.sql?raw'
 
 export interface Step { session?: string; "session-a"?: string; "session-b"?: string; files: Record<string, string> }
 
@@ -140,4 +153,11 @@ export const STEPS: Record<string, Step> = {
   "change/04-merge": { "session": s42_session, files: { "changes/04-branches.sql": f42_0 } },
   "change/05-reversal": { "session": s43_session, files: { "changes/05-refund.sql": f43_0 } },
   "change/06-audit": { "session": s44_session, files: { "changes/06-audit.sql": f44_0 } },
+  "concurrency/01-transactions": { "session": s45_session, files: { "concurrency/01-functions.sql": f45_0 } },
+  "concurrency/02-mvcc": { "session": s46_session, files: {  } },
+  "concurrency/03-lost-update": { "session-a": s47_session_a, "session-b": s47_session_b, files: {  } },
+  "concurrency/04-isolation": { "session-a": s48_session_a, "session-b": s48_session_b, files: {  } },
+  "concurrency/05-locks": { "session-a": s49_session_a, "session-b": s49_session_b, files: {  } },
+  "concurrency/06-deadlock": { "session-a": s50_session_a, "session-b": s50_session_b, files: {  } },
+  "concurrency/07-transfer": { "session": s51_session, files: { "concurrency/07-transfer.sql": f51_0 } },
 }

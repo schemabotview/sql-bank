@@ -1,0 +1,14 @@
+A x=> BEGIN;
+B x=> BEGIN;
+A x=> SELECT overdraft_limit FROM core.accounts
+A x-> WHERE account_id = 1012 FOR UPDATE;
+B x=> SELECT overdraft_limit FROM core.accounts
+B x-> WHERE account_id = 1012 FOR UPDATE;
+A x=> UPDATE core.accounts SET overdraft_limit =
+A x-> overdraft_limit + 100 WHERE account_id = 1012;
+A x=> COMMIT;
+B x=> UPDATE core.accounts SET overdraft_limit =
+B x-> overdraft_limit + 100 WHERE account_id = 1012;
+B x=> COMMIT;
+B x=> SELECT overdraft_limit FROM core.accounts
+B x-> WHERE account_id = 1012;

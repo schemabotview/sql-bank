@@ -1,0 +1,21 @@
+syndica=> \set VERBOSITY terse
+syndica=> \i concurrency/01-functions.sql
+CREATE FUNCTION
+CREATE FUNCTION
+syndica=> BEGIN;
+BEGIN
+syndica=*> SELECT core.withdraw(1012, 50.00);
+ withdraw 
+----------
+     5038
+(1 row)
+
+syndica=*> SAVEPOINT before_second;
+SAVEPOINT
+syndica=*> SELECT core.withdraw(9999, 20.00);
+ERROR:  insert or update on table "postings" violates foreign key constraint "po
+stings_account_id_fkey"
+syndica=!> ROLLBACK TO SAVEPOINT before_second;
+ROLLBACK
+syndica=*> COMMIT;
+COMMIT

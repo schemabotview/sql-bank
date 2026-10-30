@@ -1,0 +1,36 @@
+
+
+syndica=> BEGIN ISOLATION LEVEL SERIALIZABLE;
+BEGIN
+
+
+
+
+
+
+syndica=*> SELECT core.balance(1013);
+ balance 
+---------
+ 2303.45
+(1 row)
+
+
+
+
+
+
+
+syndica=*> SELECT core.withdraw(1013, 1300);
+ withdraw 
+----------
+     5041
+(1 row)
+
+
+
+syndica=*> COMMIT;
+ERROR:  could not serialize access due to read/write depende
+ncies among transactions
+DETAIL:  Reason code: Canceled on identification as a pivot,
+ during commit attempt.
+HINT:  The transaction might succeed if retried.

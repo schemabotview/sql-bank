@@ -1,0 +1,30 @@
+syndica=> BEGIN ISOLATION LEVEL SERIALIZABLE;
+BEGIN
+
+
+syndica=*> SELECT core.balance(1013);
+ balance 
+---------
+ 2303.45
+(1 row)
+
+
+
+
+
+
+
+syndica=*> SELECT core.withdraw(1013, 1300);
+ withdraw 
+----------
+     5040
+(1 row)
+
+
+
+
+
+
+
+syndica=*> COMMIT;
+COMMIT

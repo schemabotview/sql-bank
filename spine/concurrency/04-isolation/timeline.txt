@@ -1,0 +1,8 @@
+A x=> BEGIN ISOLATION LEVEL SERIALIZABLE;
+B x=> BEGIN ISOLATION LEVEL SERIALIZABLE;
+A x=> SELECT core.balance(1013);
+B x=> SELECT core.balance(1013);
+A x=> SELECT core.withdraw(1013, 1300);
+B x=> SELECT core.withdraw(1013, 1300);
+A x=> COMMIT;
+B x=> COMMIT;

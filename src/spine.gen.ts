@@ -46,6 +46,22 @@ import f20_0 from '../spine/query/07-paging/files/queries/query/07-page.sql?raw'
 import s21_session from '../spine/query/08-aggregates/session.txt?raw'
 import f21_0 from '../spine/query/08-aggregates/files/queries/query/08-balances.sql?raw'
 import s22_session from '../spine/query/09-order/session.txt?raw'
+import s23_session from '../spine/combine/01-inner/session.txt?raw'
+import f23_0 from '../spine/combine/01-inner/files/queries/combine/01-join.sql?raw'
+import s24_session from '../spine/combine/02-outer/session.txt?raw'
+import f24_0 from '../spine/combine/02-outer/files/queries/combine/02-no-account.sql?raw'
+import s25_session from '../spine/combine/03-self/session.txt?raw'
+import f25_0 from '../spine/combine/03-self/files/queries/combine/03-transfers.sql?raw'
+import s26_session from '../spine/combine/04-amplify/session.txt?raw'
+import f26_0 from '../spine/combine/04-amplify/files/queries/combine/04-per-customer.sql?raw'
+import s27_session from '../spine/combine/05-subqueries/session.txt?raw'
+import f27_0 from '../spine/combine/05-subqueries/files/queries/combine/05-latest.sql?raw'
+import s28_session from '../spine/combine/06-exists/session.txt?raw'
+import f28_0 from '../spine/combine/06-exists/files/queries/combine/06-never-reversed.sql?raw'
+import s29_session from '../spine/combine/07-sets/session.txt?raw'
+import f29_0 from '../spine/combine/07-sets/files/queries/combine/07-savers.sql?raw'
+import s30_session from '../spine/combine/08-view/session.txt?raw'
+import f30_0 from '../spine/combine/08-view/files/views/account_balance.sql?raw'
 
 export interface Step { session?: string; "session-a"?: string; "session-b"?: string; files: Record<string, string> }
 
@@ -74,4 +90,12 @@ export const STEPS: Record<string, Step> = {
   "query/07-paging": { "session": s20_session, files: { "queries/query/07-page.sql": f20_0 } },
   "query/08-aggregates": { "session": s21_session, files: { "queries/query/08-balances.sql": f21_0 } },
   "query/09-order": { "session": s22_session, files: {  } },
+  "combine/01-inner": { "session": s23_session, files: { "queries/combine/01-join.sql": f23_0 } },
+  "combine/02-outer": { "session": s24_session, files: { "queries/combine/02-no-account.sql": f24_0 } },
+  "combine/03-self": { "session": s25_session, files: { "queries/combine/03-transfers.sql": f25_0 } },
+  "combine/04-amplify": { "session": s26_session, files: { "queries/combine/04-per-customer.sql": f26_0 } },
+  "combine/05-subqueries": { "session": s27_session, files: { "queries/combine/05-latest.sql": f27_0 } },
+  "combine/06-exists": { "session": s28_session, files: { "queries/combine/06-never-reversed.sql": f28_0 } },
+  "combine/07-sets": { "session": s29_session, files: { "queries/combine/07-savers.sql": f29_0 } },
+  "combine/08-view": { "session": s30_session, files: { "views/account_balance.sql": f30_0 } },
 }

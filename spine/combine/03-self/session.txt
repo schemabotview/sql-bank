@@ -1,0 +1,8 @@
+syndica=> \i queries/combine/03-transfers.sql
+ txn_id |  reference  | from_account | to_account | amount 
+--------+-------------+--------------+------------+--------
+   5018 | rent share  |         1011 |       1012 | 150.00
+   5019 | loan        |         1012 |       1019 | 150.00
+   5020 | loan repaid |         1019 |       1011 | 150.00
+   5031 | to savings  |         1013 |       1014 | 500.00
+(4 rows)

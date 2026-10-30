@@ -1,0 +1,23 @@
+syndica=> \i queries/combine/02-no-account.sql
+ customer_id |   full_name   
+-------------+---------------
+           1 | Amelia Hughes
+           3 | Grace Lin
+           6 | Priya Shah
+(3 rows)
+
+syndica=> SELECT count(*) FROM core.customers c
+syndica->   LEFT JOIN core.account_holders h ON h.customer_id = c.customer_id
+syndica->        AND h.account_id > 1015;
+ count 
+-------
+    14
+(1 row)
+
+syndica=> SELECT count(*) FROM core.customers c
+syndica->   LEFT JOIN core.account_holders h ON h.customer_id = c.customer_id
+syndica->  WHERE h.account_id > 1015;
+ count 
+-------
+     6
+(1 row)

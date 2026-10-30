@@ -1,0 +1,16 @@
+syndica=> \i views/account_balance.sql
+CREATE VIEW
+syndica=> SELECT account_no, balance FROM core.account_balance
+syndica->  WHERE kind = 'current' ORDER BY balance DESC LIMIT 3;
+ account_no | balance 
+------------+---------
+ SY40000013 | 2303.45
+ SY40000011 | 2298.95
+ SY40000012 | 1626.50
+(3 rows)
+
+syndica=> UPDATE core.account_balance SET balance = 0 WHERE account_id = 1011;
+ERROR:  cannot update view "account_balance"
+DETAIL:  Views containing GROUP BY are not automatically updatable.
+HINT:  To enable updating the view, provide an INSTEAD OF UPDATE trigger or an u
+nconditional ON UPDATE DO INSTEAD rule.

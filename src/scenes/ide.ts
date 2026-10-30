@@ -83,21 +83,25 @@ export const TIMELINE_IDS = { a: 'session-a', b: 'session-b', side: 'side' } as 
 
 /**
  * A console fold for a session longer than TERMINAL_ROWS: each result's `(n rows)` line and the blank
- * after it fold to ONE row (saving one), from the top, only as many as needed. Nothing is retyped;
+ * after it fold to ONE row (saving one), from the top, only as many as needed; if that is not enough,
+ * a result's column header and its ---- rule fold too, from the last result up. Nothing is retyped;
  * a session that still does not fit is check-content's to report.
  */
 export function autoShow(session: string): [number, number][] | undefined {
   const rows = trim(session).split('\n')
-  let over = rows.length - TERMINAL_ROWS
+  const over = rows.length - TERMINAL_ROWS
   if (over <= 0) return undefined
+  // first resort: `(n rows)` + blank, from the top; then a result's header + rule, from the bottom
   const folds: number[] = []
   for (let i = 0; i + 1 < rows.length && folds.length < over; i++)
-    if (/^\(\d+ rows?\)$/.test(rows[i]) && rows[i + 1] === '') folds.push(i + 1) // 1-based line of `(n rows)`
+    if (/^\(\d+ rows?\)$/.test(rows[i]) && rows[i + 1] === '') folds.push(i + 1) // 1-based
+  for (let i = rows.length - 2; i > 0 && folds.length < over; i--)
+    if (/^-+(\+-+)*$/.test(rows[i + 1]) && !folds.some((f) => Math.abs(f - (i + 1)) < 2)) folds.push(i + 1)
+  folds.sort((x, y) => x - y)
   const show: [number, number][] = []
   let from = 1
   for (const f of folds) { if (f > from) show.push([from, f - 1]); from = f + 2 }
   show.push([from, rows.length])
-  over -= folds.length
   return show
 }
 

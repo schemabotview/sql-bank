@@ -1,0 +1,20 @@
+syndica=> \i queries/combine/04-per-customer.sql
+  full_name  |  held   
+-------------+---------
+ Chloe Price | 7812.51
+ Marcus Reid | 2303.45
+(2 rows)
+
+syndica=> SELECT sum(p.amount) AS via_accounts FROM core.postings p
+syndica->  WHERE p.account_id IN (SELECT account_id FROM core.account_holders);
+ via_accounts 
+--------------
+     15666.87
+(1 row)
+
+syndica=> SELECT sum(p.amount) AS via_customers FROM core.account_holders h
+syndica->   JOIN core.postings p ON p.account_id = h.account_id;
+ via_customers 
+---------------
+      17970.32
+(1 row)

@@ -1,0 +1,21 @@
+syndica=> SELECT account_id, balance
+syndica->   FROM (SELECT account_id, sum(amount) AS balance
+syndica(>           FROM core.postings GROUP BY account_id) AS b
+syndica->  WHERE balance > (SELECT avg(amount) FROM core.postings
+syndica(>                    WHERE amount > 0)
+syndica->  ORDER BY balance DESC LIMIT 3;
+ account_id | balance 
+------------+---------
+       1014 | 5509.06
+       1013 | 2303.45
+       1011 | 2298.95
+(3 rows)
+
+syndica=> \i queries/combine/05-latest.sql
+ account_no | posting_id | amount 
+------------+------------+--------
+ SY40000011 |       9063 | -58.25
+ SY40000011 |       9040 | 150.00
+ SY40000016 |       9053 | -22.10
+ SY40000016 |       9051 | -18.40
+(4 rows)

@@ -1,0 +1,18 @@
+syndica=> SELECT count(*) FROM core.transactions
+syndica->  WHERE txn_id NOT IN (SELECT reverses FROM core.transactions);
+ count 
+-------
+     0
+(1 row)
+
+syndica=> SELECT count(*), count(reverses) FROM core.transactions;
+ count | count 
+-------+-------
+    36 |     1
+(1 row)
+
+syndica=> \i queries/combine/06-never-reversed.sql
+ never_reversed 
+----------------
+             35
+(1 row)

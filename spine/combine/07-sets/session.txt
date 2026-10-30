@@ -1,0 +1,19 @@
+syndica=> \i queries/combine/07-savers.sql
+ customer_id 
+-------------
+         107
+(1 row)
+
+syndica=> SELECT count(*) FROM (SELECT customer_id FROM core.account_holders
+syndica(>   UNION SELECT customer_id FROM core.account_holders) AS u;
+ count 
+-------
+    11
+(1 row)
+
+syndica=> SELECT count(*) FROM (SELECT customer_id FROM core.account_holders
+syndica(>   UNION ALL SELECT customer_id FROM core.account_holders) AS u;
+ count 
+-------
+    24
+(1 row)

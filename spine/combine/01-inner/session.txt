@@ -1,0 +1,15 @@
+syndica=> \i queries/combine/01-join.sql
+ account_no |  kind   |    city    
+------------+---------+------------
+ SY40000013 | current | Manchester
+ SY40000014 | savings | Manchester
+ SY40000018 | current | Manchester
+ SY40000020 | current | Manchester
+(4 rows)
+
+syndica=> SELECT count(*) FROM core.accounts a
+syndica->   JOIN ref.branches b ON b.code = a.branch_code;
+ count 
+-------
+    16
+(1 row)

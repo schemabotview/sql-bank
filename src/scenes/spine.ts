@@ -56,5 +56,9 @@ export function tree(key: string, active?: string): TreeEntry[] {
     }
   const sort = (es: TreeEntry[]): TreeEntry[] =>
     es.sort((a, b) => Number(!!b.children) - Number(!!a.children) || a.name.localeCompare(b.name)).map((e) => (e.children ? { ...e, children: sort(e.children) } : e))
-  return sort(root)
+  // A folder stays open only if it holds the open file or something this step added — as an editor's
+  // explorer does. Listing every file made the pane outgrow the frame by the fifth course.
+  const live = (e: TreeEntry): boolean => (e.children ? e.children.some(live) : !!e.state)
+  const fold = (es: TreeEntry[]): TreeEntry[] => es.map((e) => (e.children ? (live(e) ? { ...e, children: fold(e.children) } : { name: e.name, folder: true }) : e))
+  return fold(sort(root))
 }

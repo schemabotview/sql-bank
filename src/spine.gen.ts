@@ -103,6 +103,19 @@ import s50_session_a from '../spine/concurrency/06-deadlock/session-a.txt?raw'
 import s50_session_b from '../spine/concurrency/06-deadlock/session-b.txt?raw'
 import s51_session from '../spine/concurrency/07-transfer/session.txt?raw'
 import f51_0 from '../spine/concurrency/07-transfer/files/concurrency/07-transfer.sql?raw'
+import s52_session from '../spine/perform/01-baseline/session.txt?raw'
+import f52_0 from '../spine/perform/01-baseline/files/perform/01-perf-data.sql?raw'
+import f52_1 from '../spine/perform/01-baseline/files/perform/statement.sql?raw'
+import s53_session from '../spine/perform/02-analyze/session.txt?raw'
+import f53_0 from '../spine/perform/02-analyze/files/perform/02-explain.sql?raw'
+import s54_session from '../spine/perform/03-btree/session.txt?raw'
+import f54_0 from '../spine/perform/03-btree/files/perform/03-index.sql?raw'
+import s55_session from '../spine/perform/04-composite/session.txt?raw'
+import f55_0 from '../spine/perform/04-composite/files/perform/04-composite.sql?raw'
+import s56_session from '../spine/perform/05-covering/session.txt?raw'
+import f56_0 from '../spine/perform/05-covering/files/perform/05-covering.sql?raw'
+import s57_session from '../spine/perform/06-matview/session.txt?raw'
+import f57_0 from '../spine/perform/06-matview/files/perform/06-daily.sql?raw'
 
 export interface Step { session?: string; "session-a"?: string; "session-b"?: string; files: Record<string, string> }
 
@@ -160,4 +173,10 @@ export const STEPS: Record<string, Step> = {
   "concurrency/05-locks": { "session-a": s49_session_a, "session-b": s49_session_b, files: {  } },
   "concurrency/06-deadlock": { "session-a": s50_session_a, "session-b": s50_session_b, files: {  } },
   "concurrency/07-transfer": { "session": s51_session, files: { "concurrency/07-transfer.sql": f51_0 } },
+  "perform/01-baseline": { "session": s52_session, files: { "perform/01-perf-data.sql": f52_0, "perform/statement.sql": f52_1 } },
+  "perform/02-analyze": { "session": s53_session, files: { "perform/02-explain.sql": f53_0 } },
+  "perform/03-btree": { "session": s54_session, files: { "perform/03-index.sql": f54_0 } },
+  "perform/04-composite": { "session": s55_session, files: { "perform/04-composite.sql": f55_0 } },
+  "perform/05-covering": { "session": s56_session, files: { "perform/05-covering.sql": f56_0 } },
+  "perform/06-matview": { "session": s57_session, files: { "perform/06-daily.sql": f57_0 } },
 }

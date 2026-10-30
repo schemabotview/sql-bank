@@ -1,0 +1,17 @@
+syndica=> \i perform/02-explain.sql
+                                QUERY PLAN                                 
+---------------------------------------------------------------------------
+ Sort (actual rows=10.00 loops=1)
+   Sort Key: booked_on
+   Sort Method: quicksort  Memory: 25kB
+   ->  Seq Scan on postings (actual rows=10.00 loops=1)
+         Filter: ((booked_on >= '2026-04-01'::date) AND (account_id = 42))
+         Rows Removed by Filter: 29990
+(6 rows)
+
+syndica=> SELECT reltuples::bigint AS estimated_rows, relpages AS pages
+syndica->   FROM pg_class WHERE oid = 'perf.postings'::regclass;
+ estimated_rows | pages 
+----------------+-------
+          30000 |   192
+(1 row)

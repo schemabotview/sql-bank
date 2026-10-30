@@ -14,7 +14,7 @@ syndica=*> SELECT xmin, xmax, ctid, phone FROM core.customers
 syndica-*>  WHERE customer_id = 3;
  xmin | xmax |  ctid  |      phone      
 ------+------+--------+-----------------
- 1496 |    0 | (0,19) | +44 7700 900103
+ 1623 |    0 | (0,19) | +44 7700 900103
 (1 row)
 
 syndica=*> ROLLBACK;
@@ -23,5 +23,5 @@ syndica=> SELECT xmin, xmax, ctid, phone FROM core.customers
 syndica->  WHERE customer_id = 3;
  xmin | xmax | ctid  | phone 
 ------+------+-------+-------
- 1239 | 1496 | (0,3) | 
+ 1239 | 1623 | (0,3) | 
 (1 row)

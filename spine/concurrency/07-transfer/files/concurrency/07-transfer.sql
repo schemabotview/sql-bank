@@ -1,4 +1,4 @@
--- concurrency/07-transfer.sql — a transfer that stays correct under concurrency.
+-- concurrency/07-transfer.sql — a transfer that stays correct concurrently.
 ALTER TABLE core.transactions ADD COLUMN request_id text UNIQUE;
 
 CREATE FUNCTION core.transfer(req text, src bigint, dst bigint, amt numeric)

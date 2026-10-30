@@ -1,0 +1,17 @@
+syndica=> \i perform/03-index.sql
+CREATE INDEX
+syndica=> \i perform/02-explain.sql
+                                QUERY PLAN                                
+--------------------------------------------------------------------------
+ Sort (actual rows=10.00 loops=1)
+   Sort Key: booked_on
+   Sort Method: quicksort  Memory: 25kB
+   ->  Bitmap Heap Scan on postings (actual rows=10.00 loops=1)
+         Recheck Cond: (account_id = 42)
+         Filter: (booked_on >= '2026-04-01'::date)
+         Rows Removed by Filter: 90
+         Heap Blocks: exact=100
+         ->  Bitmap Index Scan on by_account (actual rows=100.00 loops=1)
+               Index Cond: (account_id = 42)
+               Index Searches: 1
+(11 rows)

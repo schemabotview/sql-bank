@@ -1,0 +1,16 @@
+syndica=> \i perform/01-perf-data.sql
+CREATE SCHEMA
+SELECT 30000
+ALTER TABLE
+VACUUM
+syndica=> EXPLAIN (COSTS OFF)
+syndica-> SELECT booked_on, amount FROM perf.postings
+syndica-> WHERE account_id = 42 AND booked_on >= '2026-04-01'
+syndica-> ORDER BY booked_on;
+                                QUERY PLAN                                 
+---------------------------------------------------------------------------
+ Sort
+   Sort Key: booked_on
+   ->  Seq Scan on postings
+         Filter: ((booked_on >= '2026-04-01'::date) AND (account_id = 42))
+(4 rows)

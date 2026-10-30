@@ -1,0 +1,20 @@
+syndica=> \i perform/04-composite.sql
+CREATE INDEX
+syndica=> EXPLAIN (COSTS OFF) SELECT count(*) FROM perf.postings
+syndica->  WHERE account_id = 42 AND booked_on >= '2026-04-01';
+                                  QUERY PLAN                                   
+-------------------------------------------------------------------------------
+ Aggregate
+   ->  Index Only Scan using by_account_day on postings
+         Index Cond: ((account_id = 42) AND (booked_on >= '2026-04-01'::date))
+(3 rows)
+
+syndica=> EXPLAIN (COSTS OFF) SELECT count(*) FROM perf.postings
+syndica->  WHERE account_id = 42 AND extract(month FROM booked_on) = 4;
+                           QUERY PLAN                           
+----------------------------------------------------------------
+ Aggregate
+   ->  Index Only Scan using by_account_day on postings
+         Index Cond: (account_id = 42)
+         Filter: (EXTRACT(month FROM booked_on) = '4'::numeric)
+(4 rows)

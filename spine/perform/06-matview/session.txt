@@ -1,0 +1,20 @@
+syndica=> \i perform/06-daily.sql
+SELECT 100
+CREATE INDEX
+syndica=> INSERT INTO perf.postings VALUES (30000, 42, '2026-04-10', 99.99);
+INSERT 0 1
+syndica=> SELECT postings, net FROM perf.daily_totals
+syndica->  WHERE booked_on = '2026-04-10';
+ postings |    net    
+----------+-----------
+      300 | -10705.50
+(1 row)
+
+syndica=> REFRESH MATERIALIZED VIEW CONCURRENTLY perf.daily_totals;
+REFRESH MATERIALIZED VIEW
+syndica=> SELECT postings, net FROM perf.daily_totals
+syndica->  WHERE booked_on = '2026-04-10';
+ postings |    net    
+----------+-----------
+      301 | -10605.51
+(1 row)

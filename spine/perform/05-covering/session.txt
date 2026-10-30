@@ -1,0 +1,22 @@
+syndica=> \i perform/05-covering.sql
+DROP INDEX
+CREATE INDEX
+VACUUM
+syndica=> \i perform/02-explain.sql
+                                  QUERY PLAN                                  
+------------------------------------------------------------------------------
+ Index Only Scan using by_account_day on postings (actual rows=10.00 loops=1)
+   Index Cond: ((account_id = 42) AND (booked_on >= '2026-04-01'::date))
+   Heap Fetches: 0
+   Index Searches: 1
+(4 rows)
+
+syndica=> SELECT indexrelname AS index,
+syndica->        pg_size_pretty(pg_relation_size(indexrelid)) AS size
+syndica->   FROM pg_stat_user_indexes WHERE schemaname = 'perf' ORDER BY 1;
+     index      |  size  
+----------------+--------
+ by_account     | 216 kB
+ by_account_day | 936 kB
+ postings_pkey  | 672 kB
+(3 rows)

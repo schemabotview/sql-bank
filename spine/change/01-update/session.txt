@@ -1,0 +1,20 @@
+syndica=> SELECT customer_id, full_name FROM core.customers
+syndica->  WHERE customer_id IN (106, 110) AND kyc_status = 'pending';
+ customer_id |  full_name  
+-------------+-------------
+         106 | Tom Walsh
+         110 | Liam Murphy
+(2 rows)
+
+syndica=> BEGIN;
+BEGIN
+syndica=*> \i changes/01-kyc.sql
+ customer_id |  full_name  | kyc_status 
+-------------+-------------+------------
+         106 | Tom Walsh   | verified
+         110 | Liam Murphy | verified
+(2 rows)
+
+UPDATE 2
+syndica=*> COMMIT;
+COMMIT

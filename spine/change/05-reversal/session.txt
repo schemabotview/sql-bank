@@ -1,0 +1,21 @@
+syndica=> \i changes/05-refund.sql
+ txn_id | account_id | amount 
+--------+------------+--------
+   5037 |       1016 |  15.00
+   5037 |       1002 | -15.00
+(2 rows)
+
+INSERT 0 2
+syndica=> SELECT txn_id, kind, reverses FROM core.transactions
+syndica->  WHERE 5023 IN (txn_id, reverses) ORDER BY txn_id;
+ txn_id |   kind   | reverses 
+--------+----------+----------
+   5023 | fee      |         
+   5037 | reversal |     5023
+(2 rows)
+
+syndica=> SELECT balance FROM core.account_balance WHERE account_id = 1016;
+ balance 
+---------
+  304.50
+(1 row)

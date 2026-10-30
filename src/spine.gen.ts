@@ -78,6 +78,18 @@ import s37_session from '../spine/analyse/07-islands/session.txt?raw'
 import f37_0 from '../spine/analyse/07-islands/files/queries/analyse/07-islands.sql?raw'
 import s38_session from '../spine/analyse/08-rollup/session.txt?raw'
 import f38_0 from '../spine/analyse/08-rollup/files/queries/analyse/08-rollup.sql?raw'
+import s39_session from '../spine/change/01-update/session.txt?raw'
+import f39_0 from '../spine/change/01-update/files/changes/01-kyc.sql?raw'
+import s40_session from '../spine/change/02-delete/session.txt?raw'
+import f40_0 from '../spine/change/02-delete/files/changes/02-duplicate.sql?raw'
+import s41_session from '../spine/change/03-insert-select/session.txt?raw'
+import f41_0 from '../spine/change/03-insert-select/files/changes/03-holder.sql?raw'
+import s42_session from '../spine/change/04-merge/session.txt?raw'
+import f42_0 from '../spine/change/04-merge/files/changes/04-branches.sql?raw'
+import s43_session from '../spine/change/05-reversal/session.txt?raw'
+import f43_0 from '../spine/change/05-reversal/files/changes/05-refund.sql?raw'
+import s44_session from '../spine/change/06-audit/session.txt?raw'
+import f44_0 from '../spine/change/06-audit/files/changes/06-audit.sql?raw'
 
 export interface Step { session?: string; "session-a"?: string; "session-b"?: string; files: Record<string, string> }
 
@@ -122,4 +134,10 @@ export const STEPS: Record<string, Step> = {
   "analyse/06-lag": { "session": s36_session, files: { "queries/analyse/06-lag.sql": f36_0 } },
   "analyse/07-islands": { "session": s37_session, files: { "queries/analyse/07-islands.sql": f37_0 } },
   "analyse/08-rollup": { "session": s38_session, files: { "queries/analyse/08-rollup.sql": f38_0 } },
+  "change/01-update": { "session": s39_session, files: { "changes/01-kyc.sql": f39_0 } },
+  "change/02-delete": { "session": s40_session, files: { "changes/02-duplicate.sql": f40_0 } },
+  "change/03-insert-select": { "session": s41_session, files: { "changes/03-holder.sql": f41_0 } },
+  "change/04-merge": { "session": s42_session, files: { "changes/04-branches.sql": f42_0 } },
+  "change/05-reversal": { "session": s43_session, files: { "changes/05-refund.sql": f43_0 } },
+  "change/06-audit": { "session": s44_session, files: { "changes/06-audit.sql": f44_0 } },
 }

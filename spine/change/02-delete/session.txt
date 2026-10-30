@@ -1,0 +1,22 @@
+syndica=> BEGIN;
+BEGIN
+syndica=*> \i changes/02-duplicate.sql
+ customer_id | full_name  |       email        
+-------------+------------+--------------------
+           6 | Priya Shah | p.shah@example.com
+(1 row)
+
+DELETE 1
+syndica=*> COMMIT;
+COMMIT
+syndica=> DELETE FROM core.accounts WHERE account_id = 1018;
+ERROR:  update or delete on table "accounts" violates foreign key constraint "ac
+count_holders_account_id_fkey" on table "account_holders"
+DETAIL:  Key (account_id)=(1018) is still referenced from table "account_holders
+".
+syndica=> SELECT account_no, closed_on FROM core.accounts
+syndica->  WHERE account_id = 1018;
+ account_no | closed_on  
+------------+------------
+ SY40000018 | 2026-10-20
+(1 row)

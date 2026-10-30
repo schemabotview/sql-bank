@@ -1,0 +1,12 @@
+syndica=> \i changes/03-holder.sql
+ account_id | customer_id 
+------------+-------------
+          2 |           1
+(1 row)
+
+INSERT 0 1
+syndica=> \i queries/combine/02-no-account.sql
+ customer_id | full_name 
+-------------+-----------
+           3 | Grace Lin
+(1 row)

@@ -1,0 +1,13 @@
+syndica=> \i changes/04-branches.sql
+CREATE TABLE
+INSERT 0 3
+ merge_action | code |         city          
+--------------+------+-----------------------
+ UPDATE       | MAN  | Manchester Piccadilly
+ INSERT       | YRK  | York
+(2 rows)
+
+MERGE 2
+syndica=> INSERT INTO ref.branches SELECT * FROM feed
+syndica->   ON CONFLICT (code) DO UPDATE SET city = EXCLUDED.city;
+INSERT 0 3

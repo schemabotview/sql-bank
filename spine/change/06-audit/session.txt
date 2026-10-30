@@ -1,0 +1,15 @@
+syndica=> \i changes/06-audit.sql
+CREATE SCHEMA
+CREATE TABLE
+CREATE FUNCTION
+CREATE TRIGGER
+syndica=> UPDATE core.customers SET email = 'chloe@example.org'
+syndica->  WHERE customer_id = 103;
+UPDATE 1
+syndica=> SELECT customer_id, old_row->>'email' AS was,
+syndica->        new_row->>'email' AS now, changed_by
+syndica->   FROM audit.customer_changes;
+ customer_id |           was           |        now        | changed_by 
+-------------+-------------------------+-------------------+------------
+         103 | chloe.price@example.com | chloe@example.org | dbteam
+(1 row)

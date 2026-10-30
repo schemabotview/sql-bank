@@ -22,7 +22,7 @@
     "shots": "node scripts/shots.mjs"
   },
   "dependencies": {
-    "@graphlearning/graphl-flow": "^0.7.0",
+    "@graphlearning/graphl-flow": "^0.8.0",
     "@graphlearning/shell": "^1.0.4",
     "lucide-react": "^1.28.0",
     "react": "^19.2.0",

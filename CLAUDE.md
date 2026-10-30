@@ -21,10 +21,7 @@ two-session timelines) replay on PostgreSQL 18.6 from an empty database in about
 and narration written (~14,900 words, ~100 min); `check` clean at 4K (56 template frames, one fit);
 every frame looked at. No audio yet (narration is text).
 
-One blocker left: **graphl-flow 0.8.0 is not on npm yet** (psql prompts, timeline-safe dedent).
-`package.json` pins `^0.7.0` so the repo installs; psql rows render as plain output until it is bumped
-to `^0.8.0`. To look at frames as they will record, install the local tarball WITHOUT saving it
-(`npm install --no-save ../graphl-flow/graphlearning-graphl-flow-0.8.0.tgz`).
+Engine: graphl-flow **0.8.0**, published (psql prompts in consoles, timeline-safe dedent).
 
 Things learned while authoring, now rules:
 - PostgreSQL 18's `EXPLAIN ANALYZE` includes BUFFERS by default; the hit/read split depends on the

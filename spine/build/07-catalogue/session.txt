@@ -1,0 +1,21 @@
+syndica=> \dt core.*
+              List of tables
+ Schema |      Name       | Type  | Owner  
+--------+-----------------+-------+--------
+ core   | account_holders | table | dbteam
+ core   | accounts        | table | dbteam
+ core   | customers       | table | dbteam
+ core   | postings        | table | dbteam
+ core   | transactions    | table | dbteam
+(5 rows)
+
+syndica=> SELECT column_name, data_type, is_nullable
+syndica->   FROM information_schema.columns
+syndica->  WHERE table_schema = 'core' AND table_name = 'postings';
+ column_name | data_type | is_nullable 
+-------------+-----------+-------------
+ posting_id  | bigint    | NO
+ txn_id      | bigint    | NO
+ account_id  | bigint    | NO
+ amount      | numeric   | NO
+(4 rows)

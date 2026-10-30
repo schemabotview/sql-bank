@@ -16,16 +16,16 @@ and `db/verify` idea are worth porting, its scenes are not.
 
 ## Status
 
-Plan approved (10 courses, 69 sections). **Scaffold in place, nothing authored.** Built and verified:
-the app skeleton (empty registries), `spine.py` (continuous replay, checkpoints, timelines), the IDE
-and timeline frames, and the checks — validated end to end on throwaway steps, then removed.
+Plan approved (10 courses, 69 sections). **Pilot authored: `start` (7), `design` (6), `build` (7) —
+20 sections, awaiting owner review.** 15 spine steps replayed on PostgreSQL 18.6; scenes and
+narration written; `check` clean at 4K; every frame looked at. No audio yet (narration is text).
 
-PostgreSQL **18.6** runs here from conda-forge (`scripts/setup-postgres.sh`; the throwaway steps
-replayed cleanly on it). One blocker left: **graphl-flow 0.8.0 is not on npm yet** (psql prompts,
-timeline-safe dedent). `package.json` pins `^0.7.0` so the repo installs; psql rows render as plain
-output until it is bumped to `^0.8.0`.
+One blocker left: **graphl-flow 0.8.0 is not on npm yet** (psql prompts, timeline-safe dedent).
+`package.json` pins `^0.7.0` so the repo installs; psql rows render as plain output until it is bumped
+to `^0.8.0`. To look at frames as they will record, install the local tarball WITHOUT saving it
+(`npm install --no-save ../graphl-flow/graphlearning-graphl-flow-0.8.0.tgz`).
 
-Next: the pilot (`start`, `design`, `build` + the first timeline).
+Next: owner review of the pilot, then `query`. The first timeline step arrives with `concurrency`.
 
 ## Route contract
 
@@ -64,7 +64,10 @@ spine/<course>/<NN-step>/
 - No clock: explicit timestamps; business date 2026-10-31; nothing depends on `now()`. The runner
   creates `syndica` with timezone Europe/London, datestyle ISO, `lc_messages` C, deadlock_timeout 1s.
 - **Scenes read the spine through `src/scenes/spine.ts`** (`session`, `file`, `tree`, `step`) — never
-  type a value from a transcript; find lines with `lineOf`.
+  type a value from a transcript; find lines with `lineOf`; pull tables, outputs and error verdicts
+  out of it with `src/scenes/psql.ts` (`result`, `output`, `outcomes`, `grab`).
+- The opening book is `scripts/gen-seed.py` → `spine/build/06-opening/files/seed/*.csv`. Its docstring
+  lists the deliberately awkward cases later courses depend on; change it only with a full replay.
 - Author in course order. An approved course is frozen; editing it means a full replay and a review
   of every later transcript that moved.
 - Roles are cluster-wide: a replay drops `syndica_%` roles first; `dbteam` is the base role.
@@ -74,8 +77,9 @@ spine/<course>/<NN-step>/
 
 ## Frames
 
-`src/scenes/ide.ts`: `ideFrame` — explorer | editor (80 cols, 23 rows) over a psql console (80 cols,
-13 rows — fold a long session with `sessionShow`, never retype it) | fixed side pane; and
+`src/scenes/ide.ts`: `ideFrame` — explorer | editor (80 cols, 16 rows) over a psql console (80 cols,
+20 rows — fold a long session with `sessionShow`, never retype it) | fixed side pane (`spread`, so
+its cards fill the column); and
 `timelineFrame` — session A | session B (60 cols each) | side pane, three equal columns whose box equals
 the IDE template's, so every frame shares one fit. Concept frames (◆) are free-form. Every side pane
 carries a diagram, not bullets. No edges between panes. Never write `x`/`y`.

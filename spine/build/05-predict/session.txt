@@ -1,0 +1,11 @@
+syndica=> \i build/05-predict.sql
+INSERT 0 1
+psql:build/05-predict.sql:8: ERROR:  null value in column "full_name" of relatio
+n "customers" violates not-null constraint
+psql:build/05-predict.sql:11: ERROR:  duplicate key value violates unique constr
+aint "customers_email_key"
+psql:build/05-predict.sql:14: ERROR:  new row for relation "accounts" violates c
+heck constraint "accounts_currency_check"
+psql:build/05-predict.sql:17: ERROR:  new row for relation "accounts" violates c
+heck constraint "accounts_check"
+INSERT 0 1

@@ -24,7 +24,9 @@ const GAP = 10 // graphl-flow's GAP between siblings
 export const EXPLORER_W = 280
 export const EDITOR_COLS = 80
 export const EDITOR_W = 787
-export const EDITOR_ROWS = 23
+// 16, not python-expense-tracker's 23: SQL files are short and psql transcripts long, so the editor
+// gives rows to the console (20). One template still — every frame keeps one fit.
+export const EDITOR_ROWS = 16
 export const EDITOR_H = EDITOR_ROWS * ROW + CHROME
 export const SIDE_W = 649
 export const FRAME_W = EXPLORER_W + EDITOR_W + SIDE_W + 2 * GAP
@@ -89,7 +91,9 @@ export function ideFrame({ tree, editor, session, sessionHighlight, sessionShow,
     type: 'code', id: IDE_IDS.terminal, console: true, cols: EDITOR_COLS, filename: PROMPT_TITLE, code: verbatim(session),
     highlight: sessionHighlight, show: sessionShow, fill: true, w: EDITOR_W, minH: TERMINAL_H,
   }
-  const pane: Group = { type: 'group', id: IDE_IDS.side, bare: true, w: SIDE_W, minH: FRAME_H, children: side }
+  // spread: the pane's cards are spaced down its full height, so a diagram fills the column instead
+  // of sitting at the top of an empty one (check-render's SIDE_FILL).
+  const pane: Group = { type: 'group', id: IDE_IDS.side, bare: true, spread: true, w: SIDE_W, minH: FRAME_H, children: side }
   return {
     dir: 'row',
     nodes: [explorer, { type: 'group', id: 'workbench', bare: true, children: [code, term] }, pane],
@@ -117,7 +121,7 @@ export function timelineFrame({ a, b, highlightA, highlightB, side, edges = [] }
     nodes: [
       pane(TIMELINE_IDS.a, 'session A', a, highlightA),
       pane(TIMELINE_IDS.b, 'session B', b, highlightB),
-      { type: 'group', id: TIMELINE_IDS.side, bare: true, w: TIMELINE_W, minH: FRAME_H, children: side },
+      { type: 'group', id: TIMELINE_IDS.side, bare: true, spread: true, w: TIMELINE_W, minH: FRAME_H, children: side },
     ],
     edges,
   }

@@ -1,3 +1,6 @@
 {
-  "_comment": "Curated publish titles (YouTube title + thumbnail header) per course, keyed by course id. Search-first: what someone would actually type. Each course adds its own when it is authored."
+  "_comment": "Curated publish titles (YouTube title + thumbnail header) per course, keyed by course id. Search-first: what someone would actually type. Each course adds its own when it is authored.",
+  "start": "What is a database? PostgreSQL and psql for beginners",
+  "design": "Database design for beginners: entities, keys, normalisation, double-entry",
+  "build": "SQL CREATE TABLE, primary keys, foreign keys and constraints (PostgreSQL)"
 }

@@ -1,6 +1,6 @@
 # Building Syndica Bank's database: SQL from beginner to professional — plan
 
-**Status: v1 plan, approved for size (2026-10-30).** Nothing is authored yet.
+**Status: v1 plan, approved for size (2026-10-30).** Pilot authored (2026-10-30): `start`, `design`, `build` — awaiting owner review.
 
 ## The idea
 
@@ -28,12 +28,16 @@ quoted as shapes, row counts and buffers, never timings.
 
 | schema | tables |
 | --- | --- |
-| `ref` | `branches`, `products`, `merchant_categories` (a tree), `business_date` |
-| `core` | `customers`, `accounts`, `account_holders` (N:M), `transactions`, `postings`, `cards` |
-| `hr` | `employees` (a manager tree, each at a branch) |
+| `ref` | `branches` (from `start`); `merchant_categories` (a tree) when a course first needs it |
+| `core` | `customers`, `accounts`, `account_holders` (N:M), `transactions`, `postings` (from `build`); `cards` when needed |
+| `hr` | `employees` (a manager tree, each at a branch) — when `analyse` first needs a hierarchy |
 | `audit` | `audit_log` (from `change`) |
 | `perf` | generated large `postings` (from `perform`) |
 | `sandbox` | throwaway demos, dropped on screen |
+
+Schema v1 (the end of `build`) is the six tables above marked `build`/`start`. An account's product is its
+`kind` column (`current`, `savings`, `internal`), not a separate products table. Every table added later
+arrives in the course that first needs it, by a new file — never by editing an earlier one.
 
 **The ledger is double-entry**: a transaction posts signed `numeric(14,2)` amounts that sum to zero;
 a balance is derived from postings, never stored or updated; mistakes are corrected by reversal.
@@ -77,7 +81,7 @@ Rules:
 
 ## Frames
 
-- **IDE**: explorer (`syndica-db/`) | editor (80 cols) over `psql` terminal | fixed side pane. Every
+- **IDE**: explorer (`syndica-db/`) | editor (80 cols × 16 rows) over a `psql` console (80 × 20) | fixed side pane. Every
   side pane carries a diagram, never bullets.
 - **Concept** (◆ full scene): a canonical picture that needs the whole 16:9 frame, real output inside.
 - **Timeline**: session A | session B, two real transcripts aligned row by row, plus the side pane.

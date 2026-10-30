@@ -1,0 +1,15 @@
+syndica=> \i build/03-accounts.sql
+CREATE TABLE
+CREATE TABLE
+syndica=> INSERT INTO core.accounts (account_no, kind, branch_code, opened_on)
+syndica->   VALUES ('SY40000001', 'current', 'YRK', '2026-09-01');
+ERROR:  insert or update on table "accounts" violates foreign key constraint "ac
+counts_branch_code_fkey"
+DETAIL:  Key (branch_code)=(YRK) is not present in table "branches".
+syndica=> INSERT INTO core.accounts (account_no, kind, branch_code, opened_on)
+syndica->   VALUES ('SY40000001', 'current', 'LDS', '2026-09-01');
+INSERT 0 1
+syndica=> DELETE FROM ref.branches WHERE code = 'LDS';
+ERROR:  update or delete on table "branches" violates RESTRICT setting of foreig
+n key constraint "accounts_branch_code_fkey" on table "accounts"
+DETAIL:  Key (code)=(LDS) is referenced from table "accounts".

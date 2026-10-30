@@ -1,0 +1,18 @@
+syndica=> \i design/04-sheet.sql
+CREATE SCHEMA
+CREATE TABLE
+INSERT 0 3
+syndica=> UPDATE sandbox.account_sheet SET email = 'chloe@example.org'
+syndica->   WHERE account_no = 'SY40000014';
+UPDATE 1
+syndica=> SELECT account_no, holder, email FROM sandbox.account_sheet
+syndica->   WHERE holder = 'Chloe Price';
+ account_no |   holder    |          email          
+------------+-------------+-------------------------
+ SY40000013 | Chloe Price | chloe.price@example.com
+ SY40000014 | Chloe Price | chloe@example.org
+(2 rows)
+
+syndica=> DROP SCHEMA sandbox CASCADE;
+NOTICE:  drop cascades to table sandbox.account_sheet
+DROP SCHEMA

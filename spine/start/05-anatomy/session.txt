@@ -1,0 +1,12 @@
+syndica=> \i start/05-anatomy.sql
+ code |  city   
+------+---------
+ LDS  | Leeds
+ BRS  | Bristol
+(2 rows)
+
+syndica=> SELECT "City" FROM ref.branches;
+ERROR:  column "City" does not exist
+LINE 1: SELECT "City" FROM ref.branches;
+               ^
+HINT:  Perhaps you meant to reference the column "branches.city".

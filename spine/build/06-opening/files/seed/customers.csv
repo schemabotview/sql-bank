@@ -1,0 +1,11 @@
+customer_id,full_name,email,phone,kyc_status,joined_on
+101,Olivia Bennett,olivia.bennett@example.com,+44 7700 900111,verified,2026-09-02
+102,Hassan Ali,hassan.ali@example.com,+44 7700 900112,verified,2026-09-02
+103,Chloe Price,chloe.price@example.com,,verified,2026-09-03
+104,Marcus Reid,marcus.reid@example.com,+44 7700 900114,verified,2026-09-03
+105,Priya Shah,priya.shah@example.com,+44 7700 900115,verified,2026-09-07
+106,Tom Walsh,tom.walsh@example.com,,pending,2026-09-10
+107,Sofia Rossi,sofia.rossi@example.com,+44 7700 900117,verified,2026-09-14
+108,Ben Carter,ben.carter@example.com,+44 7700 900118,verified,2026-09-21
+109,Aisha Khan,aisha.khan@example.com,+44 7700 900119,verified,2026-10-01
+110,Liam Murphy,liam.murphy@example.com,+44 7700 900120,pending,2026-10-12

@@ -1,0 +1,14 @@
+syndica=> \d ref.branches
+               Table "ref.branches"
+  Column   | Type | Collation | Nullable | Default 
+-----------+------+-----------+----------+---------
+ code      | text |           |          | 
+ city      | text |           |          | 
+ opened_on | date |           |          | 
+
+syndica=> BEGIN;
+BEGIN
+syndica=*> INSERT INTO ref.branches VALUES ('YRK', 'York', '2026-10-31');
+INSERT 0 1
+syndica=*> ROLLBACK;
+ROLLBACK

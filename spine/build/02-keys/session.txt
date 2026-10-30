@@ -1,0 +1,15 @@
+syndica=> INSERT INTO ref.branches VALUES ('LDS', 'Leeds', '2026-10-31');
+INSERT 0 1
+syndica=> ALTER TABLE ref.branches ADD PRIMARY KEY (code);
+ERROR:  could not create unique index "branches_pkey"
+DETAIL:  Key (code)=(LDS) is duplicated.
+syndica=> DELETE FROM ref.branches
+syndica->   WHERE code = 'LDS' AND opened_on = '2026-10-31';
+DELETE 1
+syndica=> \i build/02-keys.sql
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+syndica=> INSERT INTO ref.branches VALUES ('LDS', 'Leeds', '2026-10-31');
+ERROR:  duplicate key value violates unique constraint "branches_pkey"
+DETAIL:  Key (code)=(LDS) already exists.

@@ -21,4 +21,4 @@ npm run shots -- <course>                     # PNGs in out/shots/, then look
 npm run build
 ```
 
-**Status:** scaffold in place; nothing authored yet.
+**Status:** pilot authored — `start`, `design`, `build` (20 sections), awaiting review.

@@ -1,0 +1,18 @@
+syndica=> SELECT 0.1::float8 + 0.2::float8 AS float8,
+syndica->        0.1::numeric + 0.2::numeric AS numeric;
+       float8        | numeric 
+---------------------+---------
+ 0.30000000000000004 |     0.3
+(1 row)
+
+syndica=> SELECT 10.005::numeric(14,2) AS rounded;
+ rounded 
+---------
+   10.01
+(1 row)
+
+syndica=> SELECT '2026-10-31 09:00+00'::timestamptz AS booked_at;
+       booked_at        
+------------------------
+ 2026-10-31 09:00:00+00
+(1 row)

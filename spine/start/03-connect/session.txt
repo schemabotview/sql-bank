@@ -1,0 +1,17 @@
+dbteam@syndica:~/syndica-db$ psql -d syndica
+psql (18.6)
+Type "help" for help.
+
+syndica=> SELECT current_user, current_database();
+ current_user | current_database 
+--------------+------------------
+ dbteam       | syndica
+(1 row)
+
+syndica=> SHOW server_version;
+ server_version 
+----------------
+ 18.6
+(1 row)
+
+syndica=> \q

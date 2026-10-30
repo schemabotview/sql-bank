@@ -1,0 +1,20 @@
+syndica=> SELECT * FROM (VALUES
+syndica(>   (1, 'Olivia',            -150.00),
+syndica(>   (1, 'Hassan',             150.00),
+syndica(>   (2, 'Tom',                 -15.00),
+syndica(>   (2, 'fee income',          15.00)
+syndica(> ) AS posting (txn, account, amount);
+ txn |  account   | amount  
+-----+------------+---------
+   1 | Olivia     | -150.00
+   1 | Hassan     |  150.00
+   2 | Tom        |  -15.00
+   2 | fee income |   15.00
+(4 rows)
+
+syndica=> SELECT sum(amount) FROM (VALUES (-150.00), (150.00),
+syndica(>   (-15.00), (15.00)) AS posting (amount);
+ sum  
+------
+ 0.00
+(1 row)

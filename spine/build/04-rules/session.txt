@@ -1,0 +1,16 @@
+syndica=> \i build/04-rules.sql
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+syndica=> SELECT account_no, opened_on, closed_on FROM core.accounts;
+ account_no | opened_on  | closed_on 
+------------+------------+-----------
+ SY40000001 | 2026-09-01 | 
+(1 row)
+
+syndica=> UPDATE core.accounts SET closed_on = '2026-08-31'
+syndica->   WHERE account_no = 'SY40000001';
+ERROR:  new row for relation "accounts" violates check constraint "accounts_chec
+k"
+DETAIL:  Failing row contains (2, SY40000001, current, LDS, GBP, 0.00, 2026-09-0
+1, 2026-08-31).

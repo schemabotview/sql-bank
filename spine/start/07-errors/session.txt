@@ -1,0 +1,13 @@
+syndica=> SELECT city FROM ref.branches WHERE code = 'LDS;
+syndica'> ';
+ city 
+------
+(0 rows)
+
+syndica=> SELECT citty FROM ref.branches;
+ERROR:  column "citty" does not exist
+LINE 1: SELECT citty FROM ref.branches;
+               ^
+HINT:  Perhaps you meant to reference the column "branches.city".
+syndica=> \echo :LAST_ERROR_SQLSTATE
+42703

@@ -1,0 +1,20 @@
+syndica=> \i build/01-customers.sql
+CREATE SCHEMA
+CREATE TABLE
+syndica=> INSERT INTO core.customers (full_name, email, phone, joined_on)
+syndica-> VALUES ('Amelia Hughes', 'amelia.hughes@example.com',
+syndica(>         '+44 7700 900101', '2026-09-01'),
+syndica->        ('Daniel Okafor', 'daniel.okafor@example.com',
+syndica(>         '+44 7700 900102', '2026-09-01')
+syndica-> RETURNING customer_id, full_name, kyc_status;
+ customer_id |   full_name   | kyc_status 
+-------------+---------------+------------
+           1 | Amelia Hughes | pending
+           2 | Daniel Okafor | pending
+(2 rows)
+
+INSERT 0 2
+syndica=> INSERT INTO core.customers (customer_id, full_name) VALUES (7, 'X');
+ERROR:  cannot insert a non-DEFAULT value into column "customer_id"
+DETAIL:  Column "customer_id" is an identity column defined as GENERATED ALWAYS.
+HINT:  Use OVERRIDING SYSTEM VALUE to override.

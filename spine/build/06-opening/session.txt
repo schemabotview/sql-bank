@@ -1,0 +1,17 @@
+syndica=> \i build/06-ledger.sql
+CREATE TABLE
+CREATE TABLE
+syndica=> \copy core.postings FROM 'seed/postings.csv' CSV HEADER
+ERROR:  insert or update on table "postings" violates foreign key constraint "po
+stings_txn_id_fkey"
+DETAIL:  Key (txn_id)=(5001) is not present in table "transactions".
+syndica=> \i build/06-open.sql
+COPY 10
+COPY 15
+COPY 12
+COPY 36
+COPY 72
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE

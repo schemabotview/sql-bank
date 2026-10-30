@@ -1,0 +1,10 @@
+syndica=> \i start/04-branches.sql
+CREATE SCHEMA
+CREATE TABLE
+INSERT 0 3
+ code |    city    | opened_on  
+------+------------+------------
+ LDS  | Leeds      | 2009-04-01
+ BRS  | Bristol    | 2012-09-17
+ MAN  | Manchester | 2015-03-02
+(3 rows)

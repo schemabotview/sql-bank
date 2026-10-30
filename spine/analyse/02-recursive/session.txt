@@ -1,0 +1,8 @@
+syndica=> \i queries/analyse/02-chain.sql
+ hop | src  | dst  | looped 
+-----+------+------+--------
+   1 | 1011 | 1012 | f
+   2 | 1012 | 1019 | f
+   3 | 1019 | 1011 | f
+   4 | 1011 | 1012 | t
+(4 rows)

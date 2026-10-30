@@ -1,0 +1,12 @@
+syndica=> \i queries/analyse/03-running.sql
+    day     |   reference    | amount  | balance 
+------------+----------------+---------+---------
+ 2026-09-10 | cash deposit   |  300.00 |  300.00
+ 2026-09-12 | ATM withdrawal | -120.00 |  180.00
+ 2026-10-05 | GARAGE BRISTOL |  -95.00 |   85.00
+ 2026-10-06 | TYRES DIRECT   | -140.00 |  -55.00
+ 2026-10-07 | overdraft fee  |  -15.00 |  -70.00
+ 2026-10-09 | salary         |  400.00 |  330.00
+ 2026-10-13 | CAFE LUMEN     |  -18.40 |  311.60
+ 2026-10-14 | CAFE LUMEN     |  -22.10 |  289.50
+(8 rows)

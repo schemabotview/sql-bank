@@ -62,6 +62,22 @@ import s29_session from '../spine/combine/07-sets/session.txt?raw'
 import f29_0 from '../spine/combine/07-sets/files/queries/combine/07-savers.sql?raw'
 import s30_session from '../spine/combine/08-view/session.txt?raw'
 import f30_0 from '../spine/combine/08-view/files/views/account_balance.sql?raw'
+import s31_session from '../spine/analyse/01-cte/session.txt?raw'
+import f31_0 from '../spine/analyse/01-cte/files/queries/analyse/01-statement.sql?raw'
+import s32_session from '../spine/analyse/02-recursive/session.txt?raw'
+import f32_0 from '../spine/analyse/02-recursive/files/queries/analyse/02-chain.sql?raw'
+import s33_session from '../spine/analyse/03-running/session.txt?raw'
+import f33_0 from '../spine/analyse/03-running/files/queries/analyse/03-running.sql?raw'
+import s34_session from '../spine/analyse/04-frames/session.txt?raw'
+import f34_0 from '../spine/analyse/04-frames/files/queries/analyse/04-frames.sql?raw'
+import s35_session from '../spine/analyse/05-ranking/session.txt?raw'
+import f35_0 from '../spine/analyse/05-ranking/files/queries/analyse/05-rank.sql?raw'
+import s36_session from '../spine/analyse/06-lag/session.txt?raw'
+import f36_0 from '../spine/analyse/06-lag/files/queries/analyse/06-lag.sql?raw'
+import s37_session from '../spine/analyse/07-islands/session.txt?raw'
+import f37_0 from '../spine/analyse/07-islands/files/queries/analyse/07-islands.sql?raw'
+import s38_session from '../spine/analyse/08-rollup/session.txt?raw'
+import f38_0 from '../spine/analyse/08-rollup/files/queries/analyse/08-rollup.sql?raw'
 
 export interface Step { session?: string; "session-a"?: string; "session-b"?: string; files: Record<string, string> }
 
@@ -98,4 +114,12 @@ export const STEPS: Record<string, Step> = {
   "combine/06-exists": { "session": s28_session, files: { "queries/combine/06-never-reversed.sql": f28_0 } },
   "combine/07-sets": { "session": s29_session, files: { "queries/combine/07-savers.sql": f29_0 } },
   "combine/08-view": { "session": s30_session, files: { "views/account_balance.sql": f30_0 } },
+  "analyse/01-cte": { "session": s31_session, files: { "queries/analyse/01-statement.sql": f31_0 } },
+  "analyse/02-recursive": { "session": s32_session, files: { "queries/analyse/02-chain.sql": f32_0 } },
+  "analyse/03-running": { "session": s33_session, files: { "queries/analyse/03-running.sql": f33_0 } },
+  "analyse/04-frames": { "session": s34_session, files: { "queries/analyse/04-frames.sql": f34_0 } },
+  "analyse/05-ranking": { "session": s35_session, files: { "queries/analyse/05-rank.sql": f35_0 } },
+  "analyse/06-lag": { "session": s36_session, files: { "queries/analyse/06-lag.sql": f36_0 } },
+  "analyse/07-islands": { "session": s37_session, files: { "queries/analyse/07-islands.sql": f37_0 } },
+  "analyse/08-rollup": { "session": s38_session, files: { "queries/analyse/08-rollup.sql": f38_0 } },
 }

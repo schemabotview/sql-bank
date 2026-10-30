@@ -1,0 +1,5 @@
+syndica=> \i queries/analyse/01-statement.sql
+ opening | paid_in | paid_out | closing 
+---------+---------+----------+---------
+  180.00 |  400.00 |  -290.50 |  289.50
+(1 row)

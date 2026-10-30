@@ -1,0 +1,22 @@
+syndica=> \i queries/analyse/06-lag.sql
+   month    | card_spend | previous | change 
+------------+------------+----------+--------
+ 2026-09-01 |     217.44 |          |       
+ 2026-10-01 |     589.75 |   217.44 | 372.31
+(2 rows)
+
+syndica=> SELECT day, day - lag(day) OVER (ORDER BY day) AS gap
+syndica->   FROM (SELECT t.booked_at::date AS day FROM core.transactions t
+syndica(>           JOIN core.postings p USING (txn_id)
+syndica(>          WHERE p.account_id = 1016) AS tom ORDER BY day;
+    day     | gap 
+------------+-----
+ 2026-09-10 |    
+ 2026-09-12 |   2
+ 2026-10-05 |  23
+ 2026-10-06 |   1
+ 2026-10-07 |   1
+ 2026-10-09 |   2
+ 2026-10-13 |   4
+ 2026-10-14 |   1
+(8 rows)

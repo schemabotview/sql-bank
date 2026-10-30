@@ -1,0 +1,19 @@
+syndica=> \i queries/analyse/05-rank.sql
+ account_id | card_payments | rank | dense_rank | row_number 
+------------+---------------+------+------------+------------
+       1016 |             4 |    1 |          1 |          1
+       1011 |             2 |    2 |          2 |          2
+       1013 |             2 |    2 |          2 |          3
+       1012 |             1 |    4 |          3 |          4
+       1015 |             1 |    4 |          3 |          5
+(5 rows)
+
+syndica=> SELECT customer_id, full_name, email FROM (
+syndica(>   SELECT c.*, row_number() OVER (PARTITION BY full_name
+syndica(>                                  ORDER BY customer_id) AS n
+syndica(>   FROM core.customers c) AS d
+syndica->  WHERE n > 1;
+ customer_id | full_name  |         email          
+-------------+------------+------------------------
+         105 | Priya Shah | priya.shah@example.com
+(1 row)

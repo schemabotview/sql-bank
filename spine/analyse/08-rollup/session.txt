@@ -1,0 +1,13 @@
+syndica=> \i queries/analyse/08-rollup.sql
+ branch |  kind   | balance  | open_accounts | level 
+--------+---------+----------+---------------+-------
+ BRS    | current |  1916.00 |             2 |     0
+ BRS    | savings |   750.00 |             1 |     0
+ BRS    |         |  2666.00 |             3 |     1
+ LDS    | current |  4938.36 |             5 |     0
+ LDS    |         |  4938.36 |             5 |     1
+ MAN    | current |  2553.45 |             2 |     0
+ MAN    | savings |  5509.06 |             1 |     0
+ MAN    |         |  8062.51 |             3 |     1
+        |         | 15666.87 |            11 |     3
+(9 rows)

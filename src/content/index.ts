@@ -3,6 +3,7 @@ import { design } from './design'
 import { build } from './build'
 import { query } from './query'
 import { combine } from './combine'
+import { analyse } from './analyse'
 import type { Course, Section } from './types'
 
 // Course registry, in COURSE-PLAN.md order. A course is registered here only once it is authored.
@@ -12,6 +13,7 @@ export const COURSES: Record<string, Course> = {
   [build.id]: build,
   [query.id]: query,
   [combine.id]: combine,
+  [analyse.id]: analyse,
 }
 
 export type { Course, Section }

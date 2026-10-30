@@ -20,7 +20,7 @@ group and the owner's review unit; a section is one chapter. Each section can al
 
 ## Engine: PostgreSQL 18, pinned
 
-One pinned minor version. Every banner, result, error and plan is replayed on a real server, never
+Pinned to 18.6 (conda-forge). Every banner, result, error and plan is replayed on a real server, never
 typed. Portable SQL is taught as SQL; PostgreSQL-only behaviour is labelled **(PG)**. Plans are
 quoted as shapes, row counts and buffers, never timings.
 
@@ -219,7 +219,7 @@ spatial. Candidate follow-up: "Running Syndica in production".
 
 1. Infra — **done (2026-10-30)**: setup script, `spine.py` (continuous replay, checkpoints, timeline
    steps), IDE + timeline frames, checks; graphl-flow 0.8.0 draws psql prompts (awaiting publish).
-   PostgreSQL 18 itself awaits network access to apt.postgresql.org.
+   PostgreSQL 18.6 installed from conda-forge.
 2. Pilot: `start` + `design` + `build`, and a spike of the timeline frame → owner review.
 3. Courses 4–10 in order, each rendered, reviewed and frozen, then narrated.
 4. Record all 10, assemble the one video.

@@ -20,12 +20,10 @@ Plan approved (10 courses, 69 sections). **Scaffold in place, nothing authored.*
 the app skeleton (empty registries), `spine.py` (continuous replay, checkpoints, timelines), the IDE
 and timeline frames, and the checks — validated end to end on throwaway steps, then removed.
 
-Two blockers before authoring:
-1. **PostgreSQL 18 is not installable here**: the environment's network policy denies
-   `apt.postgresql.org`. Allow it, then run `scripts/setup-postgres.sh` (also usable as the cloud
-   setup script). `spine.py` refuses to write transcripts from any other major.
-2. **graphl-flow 0.8.0 is not on npm yet** (psql prompts, timeline-safe dedent). `package.json` pins
-   `^0.7.0` so the repo installs; psql rows render as plain output until it is bumped to `^0.8.0`.
+PostgreSQL **18.6** runs here from conda-forge (`scripts/setup-postgres.sh`; the throwaway steps
+replayed cleanly on it). One blocker left: **graphl-flow 0.8.0 is not on npm yet** (psql prompts,
+timeline-safe dedent). `package.json` pins `^0.7.0` so the repo installs; psql rows render as plain
+output until it is bumped to `^0.8.0`.
 
 Next: the pilot (`start`, `design`, `build` + the first timeline).
 
@@ -36,7 +34,9 @@ from the shell. Do not reimplement the shell.
 
 ## PostgreSQL 18, every output replayed
 
-One pinned minor version, installed by a setup script. Every banner, result, error and plan is
+**18.6**, from conda-forge via micromamba (`scripts/setup-postgres.sh`, also the cloud setup script):
+it pins the exact minor and needs no distro repo. The server listens on the unix socket in `/tmp` only;
+binaries are linked into `/usr/local/bin`. Every banner, result, error and plan is
 replayed, never typed. PostgreSQL-only behaviour is labelled (PG). Plans: shapes, rows, buffers —
 never timings.
 

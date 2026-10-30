@@ -124,15 +124,14 @@ def fresh_database(template=None):
     admin(f'DROP DATABASE IF EXISTS {DB}')
     drop_course_roles()
     if template:
-        admin(f'CREATE DATABASE {DB} TEMPLATE {template}')
+        admin(f'CREATE DATABASE {DB} TEMPLATE {template} OWNER {TEAM}')
     else:
-        # The database's settings are the runner's, not a step's: every replay reads the same clock
-        # zone, date style and message language. Nothing in the course reads now().
         admin(f'CREATE DATABASE {DB} OWNER {TEAM}')
-        admin(f"ALTER DATABASE {DB} SET timezone TO 'Europe/London'")
-        admin(f"ALTER DATABASE {DB} SET datestyle TO 'ISO, DMY'")
-        admin(f"ALTER DATABASE {DB} SET lc_messages TO 'C'")
-        admin(f"ALTER DATABASE {DB} SET deadlock_timeout TO '1s'")
+    # The database's settings are the runner's, not a step's: every replay reads the same clock zone,
+    # date style and message language. Set on BOTH paths: CREATE DATABASE … TEMPLATE copies the data
+    # but not per-database settings, so a checkpoint restart once printed every time in UTC.
+    for setting in ("timezone TO 'Europe/London'", "datestyle TO 'ISO, DMY'", "lc_messages TO 'C'", "deadlock_timeout TO '1s'"):
+        admin(f'ALTER DATABASE {DB} SET {setting}')
 
 
 def checkpoint(course):

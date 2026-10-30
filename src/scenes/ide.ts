@@ -81,7 +81,27 @@ export interface IdeFrame {
 export const IDE_IDS = { explorer: 'explorer', editor: 'editor', terminal: 'terminal', side: 'side' } as const
 export const TIMELINE_IDS = { a: 'session-a', b: 'session-b', side: 'side' } as const
 
-export function ideFrame({ tree, editor, session, sessionHighlight, sessionShow, side, edges = [] }: IdeFrame): SceneModel {
+/**
+ * A console fold for a session longer than TERMINAL_ROWS: each result's `(n rows)` line and the blank
+ * after it fold to ONE row (saving one), from the top, only as many as needed. Nothing is retyped;
+ * a session that still does not fit is check-content's to report.
+ */
+export function autoShow(session: string): [number, number][] | undefined {
+  const rows = trim(session).split('\n')
+  let over = rows.length - TERMINAL_ROWS
+  if (over <= 0) return undefined
+  const folds: number[] = []
+  for (let i = 0; i + 1 < rows.length && folds.length < over; i++)
+    if (/^\(\d+ rows?\)$/.test(rows[i]) && rows[i + 1] === '') folds.push(i + 1) // 1-based line of `(n rows)`
+  const show: [number, number][] = []
+  let from = 1
+  for (const f of folds) { if (f > from) show.push([from, f - 1]); from = f + 2 }
+  show.push([from, rows.length])
+  over -= folds.length
+  return show
+}
+
+export function ideFrame({ tree, editor, session, sessionHighlight, sessionShow = autoShow(session), side, edges = [] }: IdeFrame): SceneModel {
   const explorer: Tree = { type: 'tree', id: IDE_IDS.explorer, title: PROJECT, entries: tree, fill: true, w: EXPLORER_W }
   const code: Code = {
     type: 'code', id: IDE_IDS.editor, filename: editor.file, lang: editor.lang ?? 'sql', code: verbatim(editor.code),

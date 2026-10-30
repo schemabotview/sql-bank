@@ -1,0 +1,22 @@
+syndica=> SELECT txn_id, booked_at FROM core.transactions
+syndica->  WHERE booked_at BETWEEN '2026-10-02' AND '2026-10-03';
+ txn_id |       booked_at        
+--------+------------------------
+   5018 | 2026-10-02 08:30:00+01
+   5019 | 2026-10-02 12:10:00+01
+(2 rows)
+
+syndica=> \i queries/query/03-ranges.sql
+ txn_id |   kind   |  reference  |       booked_at        
+--------+----------+-------------+------------------------
+   5018 | transfer | rent share  | 2026-10-02 08:30:00+01
+   5019 | transfer | loan        | 2026-10-02 12:10:00+01
+   5020 | transfer | loan repaid | 2026-10-03 17:45:00+01
+(3 rows)
+
+syndica=> SELECT count(*) FROM core.transactions
+syndica->  WHERE reference LIKE 'CAFE%' AND kind IN ('card', 'fee');
+ count 
+-------
+     4
+(1 row)

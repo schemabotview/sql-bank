@@ -1,0 +1,14 @@
+syndica=> SELECT 7 / 2 AS integer_division, 7 / 2.0 AS exact,
+syndica->        round(2.675, 2) AS rounded, '42'::int + 1 AS cast;
+ integer_division |       exact        | rounded | cast 
+------------------+--------------------+---------+------
+                3 | 3.5000000000000000 |    2.68 |   43
+(1 row)
+
+syndica=> \i queries/query/05-expressions.sql
+ account_no |   masked   | overdraft_limit | monthly_cost | opened_month 
+------------+------------+-----------------+--------------+--------------
+ SY40000011 | ******0011 |          500.00 |         8.29 | 2026-09-01
+ SY40000013 | ******0013 |          250.00 |         4.15 | 2026-09-01
+ SY40000016 | ******0016 |          100.00 |         1.66 | 2026-09-01
+(3 rows)

@@ -1,0 +1,21 @@
+syndica=> SELECT account_id, sum(amount) FROM core.postings
+syndica->  WHERE sum(amount) < 0 GROUP BY account_id;
+ERROR:  aggregate functions are not allowed in WHERE
+LINE 2:  WHERE sum(amount) < 0 GROUP BY account_id;
+               ^
+syndica=> SELECT account_id, sum(amount) AS balance FROM core.postings
+syndica->  GROUP BY account_id HAVING sum(amount) < 0 ORDER BY account_id;
+ account_id |  balance  
+------------+-----------
+       1001 | -16480.00
+       1003 |     -9.06
+(2 rows)
+
+syndica=> SELECT account_id, sum(amount) AS balance FROM core.postings
+syndica->  WHERE amount < 0 GROUP BY account_id ORDER BY account_id LIMIT 3;
+ account_id |  balance  
+------------+-----------
+       1001 | -17200.00
+       1002 |    -25.00
+       1003 |     -9.06
+(3 rows)

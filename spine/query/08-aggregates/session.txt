@@ -1,0 +1,21 @@
+syndica=> \i queries/query/08-balances.sql
+ account_id | postings | balance 
+------------+----------+---------
+       1011 |        5 | 2298.95
+       1012 |        5 | 1626.50
+       1013 |        6 | 2303.45
+       1014 |        4 | 5509.06
+       1015 |        2 | 1135.01
+       1016 |        8 |  289.50
+       1017 |        1 |  750.00
+       1018 |        2 |    0.00
+       1019 |        4 |  567.00
+       1020 |        1 |  250.00
+       1021 |        2 |  937.40
+(11 rows)
+
+syndica=> SELECT count(*), count(phone) FROM core.customers;
+ count | count 
+-------+-------
+    14 |    10
+(1 row)

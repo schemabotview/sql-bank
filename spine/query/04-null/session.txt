@@ -1,0 +1,21 @@
+syndica=> SELECT count(*) FROM core.customers WHERE phone = NULL;
+ count 
+-------
+     0
+(1 row)
+
+syndica=> \i queries/query/04-null.sql
+ customer_id |  full_name  
+-------------+-------------
+           3 | Grace Lin
+           6 | Priya Shah
+         103 | Chloe Price
+         106 | Tom Walsh
+(4 rows)
+
+syndica=> SELECT count(*) FROM core.customers
+syndica->  WHERE phone <> '+44 7700 900111';
+ count 
+-------
+     9
+(1 row)

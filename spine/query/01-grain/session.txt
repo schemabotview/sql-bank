@@ -1,0 +1,16 @@
+syndica=> SELECT count(*) AS accounts FROM core.accounts;
+ accounts 
+----------
+       16
+(1 row)
+
+syndica=> \i queries/query/01-grain.sql
+ branch |   kind   
+--------+----------
+ BRS    | current
+ BRS    | savings
+ LDS    | current
+ LDS    | internal
+ MAN    | current
+ MAN    | savings
+(6 rows)

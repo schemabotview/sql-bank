@@ -31,6 +31,21 @@ import f13_4 from '../spine/build/06-opening/files/seed/customers.csv?raw'
 import f13_5 from '../spine/build/06-opening/files/seed/postings.csv?raw'
 import f13_6 from '../spine/build/06-opening/files/seed/transactions.csv?raw'
 import s14_session from '../spine/build/07-catalogue/session.txt?raw'
+import s15_session from '../spine/query/01-grain/session.txt?raw'
+import f15_0 from '../spine/query/01-grain/files/queries/query/01-grain.sql?raw'
+import s16_session from '../spine/query/03-in-between-like/session.txt?raw'
+import f16_0 from '../spine/query/03-in-between-like/files/queries/query/03-ranges.sql?raw'
+import s17_session from '../spine/query/04-null/session.txt?raw'
+import f17_0 from '../spine/query/04-null/files/queries/query/04-null.sql?raw'
+import s18_session from '../spine/query/05-expressions/session.txt?raw'
+import f18_0 from '../spine/query/05-expressions/files/queries/query/05-expressions.sql?raw'
+import s19_session from '../spine/query/06-case/session.txt?raw'
+import f19_0 from '../spine/query/06-case/files/queries/query/06-case.sql?raw'
+import s20_session from '../spine/query/07-paging/session.txt?raw'
+import f20_0 from '../spine/query/07-paging/files/queries/query/07-page.sql?raw'
+import s21_session from '../spine/query/08-aggregates/session.txt?raw'
+import f21_0 from '../spine/query/08-aggregates/files/queries/query/08-balances.sql?raw'
+import s22_session from '../spine/query/09-order/session.txt?raw'
 
 export interface Step { session?: string; "session-a"?: string; "session-b"?: string; files: Record<string, string> }
 
@@ -51,4 +66,12 @@ export const STEPS: Record<string, Step> = {
   "build/05-predict": { "session": s12_session, files: { "build/05-predict.sql": f12_0 } },
   "build/06-opening": { "session": s13_session, files: { "build/06-ledger.sql": f13_0, "build/06-open.sql": f13_1, "seed/account_holders.csv": f13_2, "seed/accounts.csv": f13_3, "seed/customers.csv": f13_4, "seed/postings.csv": f13_5, "seed/transactions.csv": f13_6 } },
   "build/07-catalogue": { "session": s14_session, files: {  } },
+  "query/01-grain": { "session": s15_session, files: { "queries/query/01-grain.sql": f15_0 } },
+  "query/03-in-between-like": { "session": s16_session, files: { "queries/query/03-ranges.sql": f16_0 } },
+  "query/04-null": { "session": s17_session, files: { "queries/query/04-null.sql": f17_0 } },
+  "query/05-expressions": { "session": s18_session, files: { "queries/query/05-expressions.sql": f18_0 } },
+  "query/06-case": { "session": s19_session, files: { "queries/query/06-case.sql": f19_0 } },
+  "query/07-paging": { "session": s20_session, files: { "queries/query/07-page.sql": f20_0 } },
+  "query/08-aggregates": { "session": s21_session, files: { "queries/query/08-balances.sql": f21_0 } },
+  "query/09-order": { "session": s22_session, files: {  } },
 }

@@ -1,0 +1,17 @@
+syndica=> \i queries/query/06-case.sql
+ account_no | overdraft_limit | tier  
+------------+-----------------+-------
+ SY40000012 |            0.00 | none
+ SY40000016 |          100.00 | small
+ SY40000013 |          250.00 | large
+ SY40000011 |          500.00 | large
+(4 rows)
+
+syndica=> SELECT account_no, CASE WHEN overdraft_limit < 250 THEN 'small'
+syndica->                         WHEN overdraft_limit = 0   THEN 'none'
+syndica->                    END AS tier
+syndica->   FROM core.accounts WHERE account_no = 'SY40000012';
+ account_no | tier  
+------------+-------
+ SY40000012 | small
+(1 row)

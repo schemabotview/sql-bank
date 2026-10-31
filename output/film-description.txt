@@ -1,0 +1,96 @@
+Learn SQL by building a bank database: full course, beginner to professional
+━━━━━━━━━━━━━━━━
+69 sections, 10 courses, 1:28:44. One database, built from empty to
+secured: schema and keys, queries and joins, window functions, transactions and locks, indexes
+and plans, roles and row-level security.
+
+Every statement is really run on PostgreSQL 18.6 — every banner, result, error and query plan
+you see is real output, replayed from one continuous database, never typed by hand.
+━━━━━━━━━━━━━━━━
+⏱ CHAPTERS
+0:00:00 ▸ Why a database, and first contact — Why a bank can't run on spreadsheets
+0:01:18 What the DB team will build
+0:02:40 A server, a database, a client
+0:04:01 The first table: ref.branches
+0:05:20 Anatomy of a statement
+0:06:39 psql itself
+0:07:55 The first errors
+0:09:16 ▸ Design the bank — From requirements to entities
+0:10:36 Relationships: joint accounts
+0:11:52 Keys: natural and surrogate
+0:13:08 Normalisation
+0:14:26 Double-entry bookkeeping
+0:15:44 Data types, and the design review
+0:17:04 ▸ Build it, and make it refuse bad data — CREATE TABLE, defaults, identity
+0:18:24 Primary, unique and composite keys
+0:19:43 Foreign keys
+0:21:01 CHECK, NOT NULL, and what NULL means
+0:22:17 Predict: accepted or refused
+0:23:35 Opening the bank
+0:24:59 Read the catalogue
+0:26:18 ▸ Ask one table questions — SELECT, DISTINCT, and result grain
+0:27:31 WHERE, IN, BETWEEN, and LIKE
+0:28:44 NULL and three-valued logic
+0:30:01 Expressions, casts, and functions
+0:31:16 CASE
+0:32:28 Deterministic ordering and paging
+0:33:46 Aggregates, GROUP BY, and HAVING
+0:34:58 Logical processing order
+0:36:17 ▸ Combine tables — Joins, grain, and the inner join
+0:37:33 Outer joins and predicate placement
+0:38:48 Self-joins
+0:40:02 Duplicate amplification
+0:41:17 Subqueries, correlated and LATERAL
+0:42:37 EXISTS, and the NOT IN NULL trap
+0:43:54 UNION, INTERSECT, and EXCEPT
+0:45:10 Views
+0:46:27 ▸ Analytical SQL — CTEs
+0:47:39 Recursive CTEs, and cycles
+0:48:55 Windows: the running balance
+0:50:09 Frames: ROWS versus RANGE
+0:51:20 Ranking, top-N, and dedup
+0:52:33 LAG, LEAD, and period comparisons
+0:53:49 Gaps and islands
+0:55:03 ROLLUP, GROUPING SETS, and FILTER
+0:56:16 ▸ Change data safely — Affected rows first, then UPDATE
+0:57:34 DELETE versus closing an account
+0:58:50 INSERT … SELECT
+1:00:05 Upsert versus MERGE
+1:01:23 Reversals
+1:02:36 Triggers and the audit log
+1:03:55 ▸ Transactions and concurrency — Invariants, ACID, and savepoints
+1:05:14 MVCC
+1:06:37 The incident: a lost update
+1:07:55 Isolation levels and write skew
+1:09:17 Locks and blocking
+1:10:34 Deadlocks
+1:11:50 Worked case: a transfer that is always correct
+1:13:09 ▸ Performance with evidence — Baseline and EXPLAIN
+1:14:24 EXPLAIN ANALYZE and statistics
+1:15:43 How a B-tree index finds rows
+1:17:01 Composite indexes and index-friendly predicates
+1:18:14 Partial and covering indexes, and the write cost
+1:19:31 Materialized views
+1:20:50 ▸ Secure it, and go live — Roles, GRANT, and REVOKE
+1:22:11 Least privilege, and an append-only ledger
+1:23:30 Masking views and row-level security
+1:24:46 SQL injection and parameters
+1:26:06 A day at Syndica Bank
+1:27:24 Where next
+━━━━━━━━━━━━━━━━
+▶ SQL — THE COURSES
+① What is a database? PostgreSQL and psql for beginners → https://graphl.in/sql-bank/#/start
+② Database design for beginners: entities, keys, normalisation, double-entry → https://graphl.in/sql-bank/#/design
+③ SQL CREATE TABLE, primary keys, foreign keys and constraints (PostgreSQL) → https://graphl.in/sql-bank/#/build
+④ SQL SELECT, WHERE, NULL and CASE: query one table (PostgreSQL) → https://graphl.in/sql-bank/#/query
+⑤ SQL JOINs explained: INNER, LEFT, self-joins, subqueries, EXISTS and UNION → https://graphl.in/sql-bank/#/combine
+⑥ SQL window functions and CTEs: RANK, LAG, running totals, recursive queries → https://graphl.in/sql-bank/#/analyse
+⑦ SQL UPDATE, DELETE, INSERT SELECT and MERGE: changing data safely → https://graphl.in/sql-bank/#/change
+⑧ SQL transactions, MVCC, isolation levels, locks and deadlocks (PostgreSQL) → https://graphl.in/sql-bank/#/concurrency
+⑨ SQL performance: EXPLAIN ANALYZE, B-tree, composite and covering indexes → https://graphl.in/sql-bank/#/perform
+⑩ PostgreSQL security: roles, least privilege, row-level security, SQL injection → https://graphl.in/sql-bank/#/secure
+━━━━━━━━━━━━━━━━
+🔗 Watch interactively on GraphL → https://graphl.in/sql-bank/
+🌐 More concepts → https://graphl.in
+━━━━━━━━━━━━━━━━
+#SQL #PostgreSQL #Databases #LearnSQL #TechEducation

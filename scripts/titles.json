@@ -2,5 +2,12 @@
   "_comment": "Curated publish titles (YouTube title + thumbnail header) per course, keyed by course id. Search-first: what someone would actually type. Each course adds its own when it is authored.",
   "start": "What is a database? PostgreSQL and psql for beginners",
   "design": "Database design for beginners: entities, keys, normalisation, double-entry",
-  "build": "SQL CREATE TABLE, primary keys, foreign keys and constraints (PostgreSQL)"
+  "build": "SQL CREATE TABLE, primary keys, foreign keys and constraints (PostgreSQL)",
+  "query": "SQL SELECT, WHERE, NULL and CASE: query one table (PostgreSQL)",
+  "combine": "SQL JOINs explained: INNER, LEFT, self-joins, subqueries, EXISTS and UNION",
+  "analyse": "SQL window functions and CTEs: RANK, LAG, running totals, recursive queries",
+  "change": "SQL UPDATE, DELETE, INSERT SELECT and MERGE: changing data safely",
+  "concurrency": "SQL transactions, MVCC, isolation levels, locks and deadlocks (PostgreSQL)",
+  "perform": "SQL performance: EXPLAIN ANALYZE, B-tree, composite and covering indexes",
+  "secure": "PostgreSQL security: roles, least privilege, row-level security, SQL injection"
 }

@@ -37,6 +37,8 @@ export const ROWS = Math.floor((FRAME_H - GAP - 2 * CHROME) / ROW)
 /** The most a console shows (autoShow folds a longer session to this); the editor keeps the rest. */
 export const TERMINAL_ROWS = 20
 export const MIN_TERMINAL = 6
+/** The fewest rows an editor gets: a file's head and its highlighted statement. */
+const MIN_EDITOR = 6
 /** The most an editor shows: what is left beside the shortest console. */
 export const EDITOR_ROWS = ROWS - MIN_TERMINAL
 const paneH = (rows: number) => rows * ROW + CHROME
@@ -101,9 +103,9 @@ export const TIMELINE_IDS = { a: 'session-a', b: 'session-b', side: 'side' } as 
  * a result's column header and its ---- rule fold too, from the last result up. Nothing is retyped;
  * a session that still does not fit is check-content's to report.
  */
-export function autoShow(session: string): [number, number][] | undefined {
+export function autoShow(session: string, limit = TERMINAL_ROWS): [number, number][] | undefined {
   const rows = trim(session).split('\n')
-  const over = rows.length - TERMINAL_ROWS
+  const over = rows.length - limit
   if (over <= 0) return undefined
   // first resort: `(n rows)` + blank, from the top; then a result's header + rule, from the bottom
   const folds: number[] = []
@@ -111,11 +113,28 @@ export function autoShow(session: string): [number, number][] | undefined {
     if (/^\(\d+ rows?\)$/.test(rows[i]) && rows[i + 1] === '') folds.push(i + 1) // 1-based
   for (let i = rows.length - 2; i > 0 && folds.length < over; i--)
     if (/^-+(\+-+)*$/.test(rows[i + 1]) && !folds.some((f) => Math.abs(f - (i + 1)) < 2)) folds.push(i + 1)
-  folds.sort((x, y) => x - y)
+  // last resort (frame v2's shorter console): the middle of a long typed statement — its continuation
+  // rows (`syndica->`, `syndica(>`) between the first and the last — folds to one row, from the top
+  const runs: [number, number][] = []
+  const cont = (i: number) => /^\w+[-('"]>/.test(rows[i] ?? '')
+  for (let i = 0; i < rows.length && folds.length + runs.reduce((n, [a, b]) => n + b - a, 0) < over; i++) {
+    if (!cont(i)) continue
+    let j = i
+    while (cont(j + 1)) j++
+    // keep the first and last continuation rows; fold [i+1, j-1] when it is at least 2 rows
+    if (j - 1 - (i + 1) >= 1 && !folds.some((f) => f >= i && f <= j + 1)) runs.push([i + 2, j]) // 1-based, inclusive
+    i = j
+  }
+  const hidden = new Set<number>()
+  for (const f of folds) { hidden.add(f); hidden.add(f + 1) }
+  for (const [a, b] of runs) for (let k = a; k <= b; k++) hidden.add(k)
   const show: [number, number][] = []
-  let from = 1
-  for (const f of folds) { if (f > from) show.push([from, f - 1]); from = f + 2 }
-  show.push([from, rows.length])
+  let start = 0
+  for (let k = 1; k <= rows.length + 1; k++) {
+    const shown = k <= rows.length && !hidden.has(k)
+    if (shown && !start) start = k
+    if (!shown && start) { show.push([start, k - 1]); start = 0 }
+  }
   return show
 }
 
@@ -185,19 +204,28 @@ function consoleRows(text: string, show?: [number, number][]): number {
   return rows + (next <= lines.length ? 1 : 0)
 }
 
-/* PORTING */ export function ideFrame(f: IdeFrame): SceneModel { try { return build(f) } catch (e) { if (f.model === 'TODO') return { nodes: [] }; throw e } }
-function build({ model, editor, session, sessionHighlight, sessionShow = autoShow(session), side, edges = [] }: IdeFrame): SceneModel {
-  const termRows = Math.max(MIN_TERMINAL, consoleRows(session, sessionShow))
-  if (termRows > TERMINAL_ROWS) throw new Error(`ide.ts "${model}": the console shows ${termRows} rows, it holds ${TERMINAL_ROWS} — fold with sessionShow`)
-  const editorRows = ROWS - termRows
+/* PORTING */ export function ideFrame(f: IdeFrame): SceneModel { try { return build(f) } catch (e) { ((globalThis as Record<string, unknown>).__frameErrors ??= [] as string[]) as string[]; ((globalThis as Record<string, unknown>).__frameErrors as string[]).push((e as Error).message); return { nodes: [] } } }
+function build({ model, editor, session, sessionHighlight, sessionShow, side, edges = [] }: IdeFrame): SceneModel {
   const code = trim(editor.code)
   const lines = code.split('\n')
   const hl = editor.highlight ?? []
+  // The editor keeps room for its highlighted lines (and a fold row each side); the console takes the
+  // rest, up to TERMINAL_ROWS, and a longer session is folded by autoShow to fit — never retyped.
+  const span = hl.length ? Math.min(lines.length, rowsOf(lines, Math.min(...hl), Math.max(...hl)) + 2) : 0
+  const need = hl.length && editor.show ? Math.min(span, rowsShown(lines, editor.show)) : span
+  const limit = Math.min(TERMINAL_ROWS, ROWS - Math.max(need, MIN_EDITOR))
+  sessionShow ??= autoShow(session, limit)
+  const termRows = Math.max(MIN_TERMINAL, consoleRows(session, sessionShow))
+  if (termRows > limit) throw new Error(`ide.ts "${model}": the console shows ${termRows} rows, it has ${limit} beside the editor — fold with sessionShow`)
+  const editorRows = ROWS - termRows
   // A window around the highlight when it fits; the hand-picked `show` only when it does not (or when
   // nothing is highlighted), grown to fill the editor. A `show` that does not fit THROWS.
   let show: [number, number][] | undefined
   if (rowsOf(lines, 1, lines.length) > editorRows) {
-    show = hl.length ? windowFor(lines, Math.min(...hl), Math.max(...hl), editorRows) : undefined
+    // Nothing highlighted: the window starts where the hand-picked `show` does (the region the
+    // section is about), and runs as far as the editor holds.
+    const at = editor.show?.[0][0] ?? 1
+    show = hl.length ? windowFor(lines, Math.min(...hl), Math.max(...hl), editorRows) : windowFor(lines, at, at, editorRows)
     if (!show) {
       if (!editor.show && hl.length) throw new Error(`ide.ts "${model}": lines ${Math.min(...hl)}–${Math.max(...hl)} do not fit ${editorRows} rows — give the editor a show`)
       try { show = grow(lines, editor.show ?? [[1, 1]], editorRows) } catch (e) { throw new Error(`"${model}": ${(e as Error).message}`) }

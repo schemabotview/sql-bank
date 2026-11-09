@@ -234,3 +234,12 @@ spatial. Candidate follow-up: "Running Syndica in production".
 2. One continuous database through the course; no rebuilds, no migrations.
 3. 10 courses, 69 sections, one video.
 4. PostgreSQL 18, pinned.
+5. IDE frame v2 (2026-11-09): every IDE section moves to graphl-flow 0.11's shared grid (1344 ×
+   756, one fit), as python-expense-tracker did. This repo's variant: the work column is the console's
+   760 — the editor over the real 80-column psql console — and there is no explorer, so the side pane,
+   TITLED with the section's mental model, is 574 wide. It holds one diagram (edges or a plot) and at
+   most one table outside it, no bullets and no notes. The editor keeps room for its highlighted
+   lines; the console takes the rest, folded (never retyped) when longer. The four timeline frames
+   keep v1's template and their own fit: two 60-column sessions side by side do not fit the grid.
+   The spine is unchanged. No narration walked a removed element, so no audio changes; the frames
+   changed, so every recording is redone.

@@ -9,7 +9,8 @@ A section is `(scene, narration)`: one full-screen 16:9 frame, one chapter of th
 
 **`COURSE-PLAN.md` is the source of truth.** Author from it; change it first, never drift from it.
 
-Engine `@graphlearning/graphl-flow`, shell `@graphlearning/shell`, both published and pinned. Sister
+Engine `@graphlearning/graphl-flow` 0.11.0, shell `@graphlearning/shell` 1.1.0, both published and
+pinned exactly (IDE frame v2, COURSE-PLAN Decision 5). Sister
 repo: **python-expense-tracker** — port its infra (frames, checks, registry, shots, film); do not
 reinvent it. The old `sql` repo (shop, `@graphlearning/flow`) is reference only: its timeline runner
 and `db/verify` idea are worth porting, its scenes are not.
@@ -21,7 +22,8 @@ two-session timelines) replay on PostgreSQL 18.6 from an empty database in about
 and narration written (~14,900 words, ~100 min); `check` clean at 4K (56 template frames, one fit);
 every frame looked at. No audio yet (narration is text).
 
-Engine: graphl-flow **0.8.0**, published (psql prompts in consoles, timeline-safe dedent).
+**2026-11-09: IDE frame v2** (COURSE-PLAN Decision 5): all 52 IDE sections on graphl-flow 0.11's
+shared grid; the 4 timeline frames and the concept frames unchanged. No narration changed.
 
 Things learned while authoring, now rules:
 - PostgreSQL 18's `EXPLAIN ANALYZE` includes BUFFERS by default; the hit/read split depends on the
@@ -30,7 +32,8 @@ Things learned while authoring, now rules:
 - Revoking UPDATE on a referenced table breaks inserts into the referencing one: the foreign-key check
   takes `FOR KEY SHARE`, which needs UPDATE (secure §2 teaches it).
 - Every referenced row carries an `xmax` lock marker after FK checks; MVCC demos use an unreferenced row.
-- `\set VERBOSITY terse` / `\set QUIET on` keep long sessions inside the 20-row console.
+- `\set VERBOSITY terse` / `\set QUIET on` keep long sessions short: on frame v2 the console has at
+  most 20 rows, fewer when the editor's highlighted lines need them.
 
 Next: owner review; then audio (Colab + Chatterbox), recording, the film.
 
@@ -84,11 +87,18 @@ spine/<course>/<NN-step>/
 
 ## Frames
 
-`src/scenes/ide.ts`: `ideFrame` — explorer | editor (80 cols, 16 rows) over a psql console (80 cols,
-20 rows — fold a long session with `sessionShow`, never retype it) | fixed side pane (`spread`, so
-its cards fill the column); and
-`timelineFrame` — session A | session B (60 cols each) | side pane, three equal columns whose box equals
-the IDE template's, so every frame shares one fit. Concept frames (◆) are free-form. Every side pane
+`src/scenes/ide.ts`: `ideFrame` is **IDE frame v2** — one 1344 × 756 grid, one fit: editor over the
+psql console in ONE 760 column (the console's 80 columns: a psql transcript is never re-wrapped; the
+editor soft-wraps past 76) | side pane 574, TITLED with the section's mental model (`model`; `sql()`
+in `section.ts` passes it). No explorer: the editor's tab names the file. The two panes share 26
+rows: the editor keeps room for its highlighted lines (`show` only when they do not fit, and it
+THROWS, naming the scene, when that does not either), the console takes the rest (at most 20) and a
+longer session is folded by `autoShow` — `(n rows)`, then a result's header, then the middle of a
+long typed statement — never retyped. The side pane holds ONE diagram (edges or a plot) and at most
+one table outside it; no bullets, no notes (check-content), filled ≥ 1/2 (check-render); a table
+there fits ~60 monospace characters a row. `timelineFrame` — session A | session B (60 cols each) |
+side pane — keeps v1's 1736 × 976 template and its OWN fit: two 60-column sessions cannot sit side by
+side on the v2 grid. check-render holds each kind to its own fit. Concept frames (◆) are free-form. Every side pane
 carries a diagram, not bullets. No edges between panes. Never write `x`/`y`.
 Frames pass spine text through `verbatim` (a leading newline graphl-flow's dedent drops) so a
 transcript that starts with blank rows keeps them.

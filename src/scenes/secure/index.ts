@@ -16,27 +16,28 @@ const table = (id: string, title: string, r: { columns: string[]; rows: string[]
 const S1 = session('secure/01-roles')
 const m = result(S1, 'roles/matrix.sql')
 const roles = sql('secure/01-roles', {
-    model: 'TODO',
+    model: 'Who you are, then what you may do',
   file: 'roles/01-roles.sql', lit: ['GRANT USAGE', 'GRANT SELECT ON ALL TABLES'], says: ['psql -q -U postgres'],
   side: [
     table('m', 'The permission matrix, from has_table_privilege()', { columns: ['role', 'table', 'SELECT', 'INSERT', 'UPDATE'], rows: m.rows.map((r) => [r[0].replace('syndica_', ''), r[1].replace('core.', ''), ...r.slice(2).map((v) => (v === 't' ? 'yes' : '—'))]) }),
     {
-      type: 'table', id: 'terms', title: 'The words', tone: 'ingest', columns: ['term', 'means'], rows: [
-        ['authentication', 'who you are: pg_hba.conf decides (described)'], ['authorisation', 'what you may do: GRANT and REVOKE'], ['a role', 'a user, or a group of privileges'],
+      type: 'group', id: 'terms', title: 'Two questions, every connection', icon: 'lock', tone: 'ingest', children: [
+        { type: 'item', id: 'authn', title: 'authentication: who are you?', sub: 'pg_hba.conf decides (described)', icon: 'key' },
+        { type: 'item', id: 'authz', title: 'authorisation: what may you do?', sub: 'GRANT and REVOKE, to a role', icon: 'shield', tone: 'store' },
       ],
     },
-    { type: 'note', id: 'n', text: 'The matrix is asked of the server, never typed: has_table_privilege() answers for each role and table — the same check every query faces.' },
   ],
+  edges: [{ from: 'authn', to: 'authz', label: 'then' }],
 })
 
 // §2 — least privilege, and an append-only ledger.
 const S2 = session('secure/02-least')
 const least = sql('secure/02-least', {
-    model: 'TODO',
-  lit: ['REVOKE UPDATE, DELETE, TRUNCATE ON core.postings', 'SECURITY DEFINER'], says: ['permission denied for table postings'],
+    model: 'The app\'s one door: a function',
+  lit: ['ALTER FUNCTION core.transfer', 'SECURITY DEFINER'], says: ['permission denied for table postings'],
   side: [
     {
-      type: 'group', id: 'doors', title: "The app's one door", icon: 'lock', tone: 'store', dir: 'row', children: [
+      type: 'group', id: 'doors', title: "The app's one door", icon: 'lock', tone: 'store', children: [
         { type: 'item', id: 'app', title: 'syndica_app', icon: 'server' },
         { type: 'item', id: 'fn', title: 'core.transfer()', sub: 'SECURITY DEFINER: runs as its owner', icon: 'workflow', tone: 'store' },
         { type: 'item', id: 'tbl', title: 'the ledger', sub: 'no direct grants at all', icon: 'database' },
@@ -44,12 +45,11 @@ const least = sql('secure/02-least', {
     },
     {
       type: 'table', id: 'tried', title: 'Tried, and refused', tone: 'consume', columns: ['as', 'tried', 'result'], rows: [
-        ['dbteam (the owner)', 'UPDATE a posting', 'permission denied'],
-        ['syndica_app', 'INSERT a posting', 'permission denied'],
-        { id: 'ok', cells: ['syndica_app', 'read core.account_balance', grab(S2, /^ (\d+\.\d+)$/m)], tone: 'store' },
+        ['dbteam', 'UPDATE a posting', 'denied'],
+        ['app', 'INSERT a posting', 'denied'],
+        { id: 'ok', cells: ['app', 'read a balance', grab(S2, /^ (\d+\.\d+)$/m)], tone: 'store' },
       ],
     },
-    { type: 'note', id: 'n', text: 'Even the owner gave up UPDATE and DELETE on postings: history cannot be edited by accident. UPDATE stays on transactions — a posting’s foreign key locks its transaction row, and that lock needs it.' },
   ],
   edges: [{ from: 'app', to: 'fn', label: 'EXECUTE' }, { from: 'fn', to: 'tbl', label: 'as owner' }],
 })
@@ -57,30 +57,32 @@ const least = sql('secure/02-least', {
 // §3 — masking views and row-level security.
 const S3 = session('secure/03-rls')
 const rls = sql('secure/03-rls', {
-    model: 'TODO',
+    model: 'Views limit columns; policies limit rows',
   lit: ['ENABLE ROW LEVEL SECURITY', "USING (branch_code = 'LDS')"], says: ['permission denied for table customers'],
   side: [
     {
+      type: 'group', id: 'how', bare: true, dir: 'row', children: [
+        { type: 'item', id: 'h-view', title: 'a view', sub: 'COLUMNS: which, and how shown', icon: 'table' },
+        { type: 'item', id: 'h-rls', title: 'a row policy (PG)', sub: 'ROWS: which each role sees', icon: 'filter', tone: 'store' },
+      ],
+    },
+    {
       type: 'table', id: 'sees', title: 'What the Leeds teller sees', tone: 'store', columns: ['asked', 'got'], rows: [
-        ['every account', `${grab(S3, /^ +(\d+) \| LDS$/m)} rows, all branch LDS`],
+        ['every account', `${grab(S3, /^ +(\d+) \| LDS$/m)} rows, all LDS`],
         ['customers, directly', 'permission denied'],
         ['customer_directory', 'names, phones masked'],
       ],
     },
     table('dir', 'The directory, as the teller reads it', result(S3, 'customer_directory')),
-    {
-      type: 'table', id: 'how', title: 'Two tools', tone: 'ingest', columns: ['tool', 'restricts'], rows: [
-        ['a view', 'COLUMNS: which, and how shown'], { id: 'rls', cells: ['a row policy (PG)', 'ROWS: which ones each role sees'], tone: 'store' },
-      ],
-    },
   ],
+  edges: [{ from: 'h-view', to: 'sees' }, { from: 'h-rls', to: 'sees' }],
 })
 
 // §4 — SQL injection and parameters.
 const S4 = session('secure/04-injection')
 const counts = [...S4.matchAll(/^ +(\d+)\n\(1 row\)/gm)].map((x) => x[1])
 const injection = sql('secure/04-injection', {
-    model: 'TODO',
+    model: 'A parameter is never SQL',
   lit: ['PREPARE search(text)', 'reference = $1'], says: ["''%s''", '%L'],
   side: [
     {
@@ -89,19 +91,19 @@ const injection = sql('secure/04-injection', {
       ],
     },
     {
-      type: 'table', id: 'r', title: 'Three ways to put it into the query', tone: 'consume', columns: ['built with', 'rows', 'the input became'], rows: [
-        { id: 's', cells: ["'%s' — pasted into the text", counts[0], 'SQL: OR true'], tone: 'consume' },
-        { id: 'l', cells: ['%L — quoted as a literal', counts[1], 'a value'], tone: 'store' },
-        { id: 'p', cells: ['$1 — a parameter', counts[2], 'a value, always'], tone: 'store' },
+      type: 'table', id: 'r', title: 'Three ways to put it into the query', tone: 'consume', columns: ['built with', 'rows', 'became'], rows: [
+        { id: 's', cells: ["'%s': pasted", counts[0], 'SQL: OR true'], tone: 'consume' },
+        { id: 'l', cells: ['%L: a literal', counts[1], 'a value'], tone: 'store' },
+        { id: 'p', cells: ['$1: a parameter', counts[2], 'a value'], tone: 'store' },
       ],
     },
     {
       type: 'table', id: 'ids', title: 'And for names', tone: 'ingest', columns: ['when SQL needs a', 'use'], rows: [
-        ['value', 'a parameter ($1)'], ['table or column name', "format('%I', name)"],
+        ['value', 'a parameter ($1)'], ['name', "format('%I', …)"],
       ],
     },
-    { type: 'note', id: 'n', text: 'The quote the user typed closed the string early, so the rest of their input became SQL. A parameter is sent apart from the SQL text: it can never close anything.' },
   ],
+  edges: [{ from: 'atk', to: 'r' }],
 })
 
 // §5 — a day at Syndica Bank.

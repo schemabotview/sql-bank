@@ -206,14 +206,14 @@ function consoleRows(text: string, show?: [number, number][]): number {
   return rows + (next <= lines.length ? 1 : 0)
 }
 
-/* PORTING */ export function ideFrame(f: IdeFrame): SceneModel { try { return build(f) } catch (e) { ((globalThis as Record<string, unknown>).__frameErrors ??= [] as string[]) as string[]; ((globalThis as Record<string, unknown>).__frameErrors as string[]).push((e as Error).message); return { nodes: [] } } }
-function build({ model, editor, session, sessionHighlight, sessionShow, side, edges = [] }: IdeFrame): SceneModel {
+export function ideFrame({ model, editor, session, sessionHighlight, sessionShow, side, edges = [] }: IdeFrame): SceneModel {
   const code = trim(editor.code)
   const lines = code.split('\n')
   const hl = editor.highlight ?? []
   // The editor keeps room for its highlighted lines (and a fold row each side); the console takes the
   // rest, up to TERMINAL_ROWS, and a longer session is folded by autoShow to fit — never retyped.
-  const span = hl.length ? Math.min(lines.length, rowsOf(lines, Math.min(...hl), Math.max(...hl)) + 2) : 0
+  const [lo, hi] = [Math.min(...hl), Math.max(...hl)]
+  const span = hl.length ? Math.min(rowsOf(lines, 1, lines.length), rowsOf(lines, lo, hi) + (lo > 1 ? 1 : 0) + (hi < lines.length ? 1 : 0)) : 0
   const need = hl.length && editor.show ? Math.min(span, rowsShown(lines, editor.show)) : span
   const limit = Math.min(TERMINAL_ROWS, ROWS - Math.max(need, MIN_EDITOR))
   sessionShow ??= autoShow(session, limit)

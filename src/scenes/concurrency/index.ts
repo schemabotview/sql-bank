@@ -19,15 +19,15 @@ const howToRead = (id: string) => ({ type: 'note' as const, id, text: 'Read acro
 // §1 — invariants, ACID, BEGIN / COMMIT / savepoints.
 const S1 = session('concurrency/01-transactions')
 const tx = sql('concurrency/01-transactions', {
-    model: 'TODO',
+    model: 'A transaction: all of it, or none',
   from: 'CREATE FUNCTION core.withdraw', lit: ['WITH t AS', 'RETURNING txn_id'], says: ['=!> ROLLBACK TO'],
   side: [
     {
-      type: 'table', id: 'acid', title: 'What a transaction promises', tone: 'ingest', columns: ['letter', 'means', 'here'], rows: [
-        ['Atomic', 'all of it, or none', 'both postings, or neither'],
-        ['Consistent', 'rules hold after', 'keys, checks, FKs'],
-        ['Isolated', 'others see before or after', 'next sections'],
-        ['Durable', 'COMMIT survives a crash', 'written to the WAL first'],
+      type: 'table', id: 'acid', title: 'What a transaction promises', tone: 'ingest', columns: ['letter', 'means'], rows: [
+        ['Atomic', 'all of it, or none'],
+        ['Consistent', 'the rules hold after'],
+        ['Isolated', 'others see before or after'],
+        ['Durable', 'COMMIT survives a crash'],
       ],
     },
     {
@@ -178,26 +178,26 @@ const dead = timelineFrame({
 // §7 — worked case: a transfer that is always correct.
 const S7 = session('concurrency/07-transfer')
 const transfer = sql('concurrency/07-transfer', {
-    model: 'TODO',
+    model: 'Every guard, in one function',
   from: 'DECLARE', lit: ['ORDER BY account_id FOR UPDATE', 'RAISE EXCEPTION'], says: ['duplicate key', 'insufficient funds'],
   side: [
     {
       type: 'table', id: 'guards', title: 'Every guard, and what it stops', tone: 'store', columns: ['guard', 'stops'], rows: [
-        ['lock both rows, lowest id first', 'lost updates, deadlocks'],
-        ['check balance AFTER locking', 'overdrawing past the limit'],
-        ['request_id UNIQUE', 'the same request twice'],
-        ['one function, one transaction', 'half a transfer'],
+        ['lock both, lowest first', 'lost updates, deadlocks'],
+        ['check AFTER locking', 'overdrawing'],
+        ['request_id UNIQUE', 'a request twice'],
+        ['one transaction', 'half a transfer'],
       ],
     },
     {
-      type: 'table', id: 'runs', title: 'Three calls', tone: 'ingest', columns: ['call', 'result'], rows: [
-        ['req-7781: 1011 → 1012, 25.00', `txn ${grab(S7, /^ +(\d{4})$/m)}`],
-        { id: 'again', cells: ['req-7781 again (a retry)', 'refused: request already done'], tone: 'consume' },
-        { id: 'poor', cells: ['req-7782: 1016 → 1011, 1000.00', `refused: ${grab(S7, /insufficient funds: (\S+ available)/)}`], tone: 'consume' },
+      type: 'group', id: 'runs', title: 'Three calls', icon: 'workflow', tone: 'ingest', children: [
+        { type: 'item', id: 'r1', title: `req-7781: 25.00 → txn ${grab(S7, /^ +(\d{4})$/m)}`, sub: '1011 → 1012', icon: 'check', tone: 'store' },
+        { type: 'item', id: 'r2', title: 'req-7781 again: refused', sub: 'a retry: the request is already done', icon: 'shield' },
+        { type: 'item', id: 'r3', title: 'req-7782: refused', sub: `1016 → 1011, 1000.00: ${grab(S7, /insufficient funds: (\S+ available)/)}`, icon: 'bell', tone: 'consume' },
       ],
     },
-    { type: 'note', id: 'n', text: 'A client that sees 40001 or a lost connection RETRIES with the same request id: the transfer happens once, however many times it is sent.' },
   ],
+  edges: [{ from: 'r1', to: 'r2', label: 'retried' }, { from: 'r2', to: 'r3' }],
 })
 
 export const concurrencyScenes: Record<string, SceneModel> = {

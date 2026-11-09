@@ -19,6 +19,7 @@ const howToRead = (id: string) => ({ type: 'note' as const, id, text: 'Read acro
 // §1 — invariants, ACID, BEGIN / COMMIT / savepoints.
 const S1 = session('concurrency/01-transactions')
 const tx = sql('concurrency/01-transactions', {
+    model: 'TODO',
   from: 'CREATE FUNCTION core.withdraw', lit: ['WITH t AS', 'RETURNING txn_id'], says: ['=!> ROLLBACK TO'],
   side: [
     {
@@ -177,6 +178,7 @@ const dead = timelineFrame({
 // §7 — worked case: a transfer that is always correct.
 const S7 = session('concurrency/07-transfer')
 const transfer = sql('concurrency/07-transfer', {
+    model: 'TODO',
   from: 'DECLARE', lit: ['ORDER BY account_id FOR UPDATE', 'RAISE EXCEPTION'], says: ['duplicate key', 'insufficient funds'],
   side: [
     {

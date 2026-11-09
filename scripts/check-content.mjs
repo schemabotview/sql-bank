@@ -78,6 +78,16 @@ for (const [id, scene] of Object.entries(SCENES)) {
       if (paneOf(end) !== 'side') problems.push(`scene ${id}  edge ${e.from} → ${e.to}: '${end}' is ${paneOf(end) ? `in the ${paneOf(end)} pane` : 'not a node'} — IDE edges stay inside the side pane`)
   // --- 3. the side pane is a diagram ---------------------------------------------------------------
   const sideEdges = edges.filter((e) => paneOf(e.from) === 'side' && paneOf(e.to) === 'side')
+  // IDE frame v2 (src/scenes/ide.ts): the side pane is titled with the mental model and holds ONE
+  // diagram (edges or a plot) and at most one table outside it, never a bullet list or a note.
+  if (all.some(({ node }) => node.id === 'ide-bench')) {
+    const tables = side.filter((n) => n.type === 'table')
+    if (!sideEdges.length && !side.some((n) => n.type === 'plot')) problems.push(`scene ${id}  the side pane has no diagram (no edge, no plot): a table alone is not the mental model`)
+    const loose = tables.filter((t) => !sideEdges.some((e) => [e.from, e.to].some((end) => end.split('.')[0] === t.id)))
+    if (loose.length > 1) problems.push(`scene ${id}  the side pane has ${loose.length} tables outside its diagram (${loose.map((t) => t.id).join(', ')}): at most one`)
+    for (const n of side) if (n.type === 'item' && n.bullets?.length) problems.push(`scene ${id}  '${n.id}' is a bullet list: draw it, or say it in the narration`)
+    for (const n of side) if (n.type === 'note') problems.push(`scene ${id}  '${n.id}' is a note: draw it, or say it in the narration`)
+  }
   if (!sideEdges.length && !side.some((n) => n.type === 'table' || n.type === 'plot'))
     problems.push(`scene ${id}  the side pane holds no edge, plot or table — it must carry a diagram, not a list`)
   // --- 5. the editor and terminal hold what they show -------------------------------------------
@@ -90,8 +100,8 @@ for (const [id, scene] of Object.entries(SCENES)) {
     const { lines, keep, rows } = drawn(editor)
     if (rows > IDE.EDITOR_ROWS) problems.push(`scene ${id}  the editor shows ${rows} rows; it holds ${IDE.EDITOR_ROWS} — fold with show`)
     const shown = lines.filter((_, i) => !keep || keep.has(i + 1))
-    const wide = shown.find((l) => l.length > IDE.EDITOR_COLS)
-    if (wide) problems.push(`scene ${id}  a line is ${wide.length} columns; the editor holds ${IDE.EDITOR_COLS} — "${wide.slice(0, 40)}…"`)
+    // v2's editor soft-wraps a long line (ide.ts counts the rows it takes): no width rule here.
+    void shown
   }
   if (term) {
     const { lines, keep, rows } = drawn(term)

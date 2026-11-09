@@ -36,6 +36,8 @@ const SIDE_FILL = +(process.env.SIDE_FILL ?? 2 / 3)
 
 const { COURSES, SCENES } = await loadRegistry()
 const sections = Object.values(COURSES).flatMap((c) => c.sections.map((s) => ({ slug: `${c.id}-${s.id}`, section: s, scene: SCENES[s.scene] })))
+  // `node scripts/check-render.mjs query` checks only slugs starting with the given prefixes.
+  .filter(({ slug }) => process.argv.length < 3 || process.argv.slice(2).some((p) => slug.startsWith(p)))
 
 const problems = []
 const ide = []
@@ -194,13 +196,16 @@ try {
       // --- the IDE template -----------------------------------------------------------------------------
       let panes = null
       if (kind) {
-        const names = kind === 'ide' ? ['explorer', 'editor', 'terminal', 'side'] : ['session-a', 'session-b', 'side']
+        // v2's editor/console split follows the transcript; the work column and the side pane do not move.
+        const names = kind === 'ide' ? ['ide-bench', 'side'] : ['session-a', 'session-b', 'side']
         panes = Object.fromEntries(names.map((p) => [p, node(p) && Object.values(R(node(p))).map((v) => Math.round(v))]))
         const pane = R(node('side'))
         const leaves = [...node('side').querySelectorAll(LEAVES)].map(R)
         const top = Math.min(...leaves.map((r) => r.y)), bottom = Math.max(...leaves.map((r) => r.y + r.h))
         const fill = leaves.length ? (bottom - top) / pane.h : 0
-        if (fill < limits.fill) out.push(`the side pane's content spans ${Math.round(fill * 100)}% of its height (< ${Math.round(limits.fill * 100)}%) — fill the column with the diagram`)
+        // v2's titled, spread side pane is held to half its height; the timeline's to SIDE_FILL.
+        const need = kind === 'ide' ? 0.5 : limits.fill
+        if (fill < need) out.push(`the side pane's content spans ${Math.round(fill * 100)}% of its height (< ${Math.round(need * 100)}%) — fill the column with the diagram`)
       }
       return { problems: [...new Set(out)], panes }
     }, [{ body: BODY_MIN_PX, icon: ICON_MIN_PX, fill: SIDE_FILL }, icons, section.focus, isIde(scene) ? 'ide' : isTimeline(scene) ? 'timeline' : null])
@@ -214,9 +219,10 @@ try {
   await server.close()
 }
 
-// Every template frame on the first one's fit; every pane at the pixels of the first frame of its kind.
-const [ref] = ide
-for (const { slug, kind, panes, fit } of ide.slice(1)) {
+// Every template frame on the first fit OF ITS KIND (IDE frame v2 and the timeline have different
+// grids); every pane at the pixels of the first frame of its kind.
+for (const { slug, kind, panes, fit } of ide) {
+  const ref = ide.find((f) => f.kind === kind)
   if (fit !== ref.fit) problems.push(`${slug}  fit ${fit} differs from ${ref.slug}'s ${ref.fit} — a template frame must not change the zoom`)
   const first = ide.find((f) => f.kind === kind)
   if (first.slug === slug) continue

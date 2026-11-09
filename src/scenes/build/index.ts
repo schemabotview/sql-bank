@@ -2,7 +2,7 @@ import type { SceneModel } from '@graphlearning/graphl-flow'
 import { view } from '../fold'
 import { ideFrame, lineOf, linesFrom } from '../ide'
 import { grab, outcomes, output, result } from '../psql'
-import { file, session, tree } from '../spine'
+import { file, session } from '../spine'
 
 // Course 3 — build it, and make it refuse bad data. Every step changes `syndica` for good: tables,
 // keys and rules are added by files in syndica-db/build/, run with \i, and the opening book is
@@ -14,7 +14,7 @@ const K1 = 'build/01-customers', F1 = 'build/01-customers.sql'
 const S1 = session(K1)
 const r1 = result(S1, 'RETURNING customer_id')
 const customers = ideFrame({
-  tree: tree(K1, F1), editor: { file: F1, code: file(K1, F1), highlight: [lineOf(file(K1, F1), 'IDENTITY'), lineOf(file(K1, F1), 'DEFAULT')] },
+  model: 'TODO', editor: { file: F1, code: file(K1, F1), highlight: [lineOf(file(K1, F1), 'IDENTITY'), lineOf(file(K1, F1), 'DEFAULT')] },
   session: S1, sessionHighlight: [lineOf(S1, 'RETURNING'), ...linesFrom(S1, 'ERROR:', 'HINT:')],
   side: [
     {
@@ -40,7 +40,7 @@ const customers = ideFrame({
 const K2 = 'build/02-keys', F2 = 'build/02-keys.sql'
 const S2 = session(K2)
 const keys = ideFrame({
-  tree: tree(K2, F2), editor: { file: F2, code: file(K2, F2), highlight: [lineOf(file(K2, F2), 'ref.branches ADD PRIMARY KEY')] },
+  model: 'TODO', editor: { file: F2, code: file(K2, F2), highlight: [lineOf(file(K2, F2), 'ref.branches ADD PRIMARY KEY')] },
   session: S2, sessionHighlight: [lineOf(S2, 'is duplicated'), lineOf(S2, 'already exists')],
   side: [
     {
@@ -67,7 +67,7 @@ const keys = ideFrame({
 const K3 = 'build/03-accounts', F3 = 'build/03-accounts.sql'
 const S3 = session(K3)
 const fk: SceneModel = ideFrame({
-  tree: tree(K3, F3), editor: { file: F3, code: file(K3, F3), ...view(file(K3, F3), 'CREATE TABLE core.accounts', undefined, 0), highlight: [lineOf(file(K3, F3), 'REFERENCES ref.branches'), lineOf(file(K3, F3), 'PRIMARY KEY (account_id, customer_id)')] },
+  model: 'TODO', editor: { file: F3, code: file(K3, F3), ...view(file(K3, F3), 'CREATE TABLE core.accounts', undefined, 0), highlight: [lineOf(file(K3, F3), 'REFERENCES ref.branches'), lineOf(file(K3, F3), 'PRIMARY KEY (account_id, customer_id)')] },
   session: S3, sessionHighlight: [lineOf(S3, 'is not present'), lineOf(S3, 'is referenced from')],
   side: [
     {
@@ -108,7 +108,7 @@ const K4 = 'build/04-rules', F4 = 'build/04-rules.sql'
 const S4 = session(K4)
 const r4 = result(S4, 'SELECT account_no, opened_on, closed_on')
 const rules = ideFrame({
-  tree: tree(K4, F4), editor: { file: F4, code: file(K4, F4), ...view(file(K4, F4), 'ALTER TABLE core.accounts', undefined, 0), highlight: [lineOf(file(K4, F4), 'closed_on >= opened_on')] },
+  model: 'TODO', editor: { file: F4, code: file(K4, F4), ...view(file(K4, F4), 'ALTER TABLE core.accounts', undefined, 0), highlight: [lineOf(file(K4, F4), 'closed_on >= opened_on')] },
   session: S4, sessionHighlight: [lineOf(S4, 'violates check')],
   side: [
     { type: 'table', id: 'acc', title: 'The one account so far', tone: 'store', columns: r4.columns, rows: r4.rows.map((r) => r.map((c) => c || 'NULL')) },
@@ -138,7 +138,7 @@ if (runs.length !== 6) throw new Error(`build/05: expected 6 outcomes, read ${ru
 const records = ['a customer with no phone', 'a customer with no name', 'Amelia again, same email', 'an account in dollars', 'closed before it opened', 'Priya Shah, a second email']
 const ruleOf = (t: string) => t.includes('not-null') ? 'NOT NULL' : t.includes('unique') ? 'UNIQUE (email)' : t.includes('currency') ? 'CHECK (currency)' : t.includes('check') ? 'CHECK (dates)' : '—'
 const predict = ideFrame({
-  tree: tree(K5, F5), editor: { file: F5, code: file(K5, F5), ...view(file(K5, F5), '-- 1', undefined, 2) },
+  model: 'TODO', editor: { file: F5, code: file(K5, F5), ...view(file(K5, F5), '-- 1', undefined, 2) },
   session: S5,
   side: [
     {
@@ -162,7 +162,7 @@ const S6 = session(K6)
 const copies = output(S6, 'build/06-open.sql').filter((l) => l.startsWith('COPY')).map((l) => l.split(' ')[1])
 const loads = ['customers', 'accounts', 'account_holders', 'transactions', 'postings']
 const opening = ideFrame({
-  tree: tree(K6, F6), editor: { file: F6, code: file(K6, F6), highlight: linesFrom(file(K6, F6), '\\copy core.customers', '\\copy core.postings') },
+  model: 'TODO', editor: { file: F6, code: file(K6, F6), highlight: linesFrom(file(K6, F6), '\\copy core.customers', '\\copy core.postings') },
   session: S6, sessionHighlight: [lineOf(S6, 'is not present')],
   side: [
     {
@@ -190,7 +190,7 @@ const S7 = session(K7)
 const dt = result(S7, '\\dt core.*')
 const cols = result(S7, 'SELECT column_name')
 const catalogue = ideFrame({
-  tree: tree(K7, F7), editor: { file: F7, code: file(K7, F7), ...view(file(K7, F7), 'CREATE TABLE core.postings', undefined, 0), highlight: linesFrom(file(K7, F7), 'posting_id', 'amount') },
+  model: 'TODO', editor: { file: F7, code: file(K7, F7), ...view(file(K7, F7), 'CREATE TABLE core.postings', undefined, 0), highlight: linesFrom(file(K7, F7), 'posting_id', 'amount') },
   session: S7, sessionShow: [[1, 9], [12, 21]],
   side: [
     {

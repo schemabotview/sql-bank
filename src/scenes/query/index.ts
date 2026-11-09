@@ -13,6 +13,7 @@ const table = (id: string, title: string, r: { columns: string[]; rows: string[]
 // §1 — SELECT, DISTINCT, result grain.
 const S1 = session('query/01-grain')
 const grain = sql('query/01-grain', {
+    model: 'TODO',
   lit: ['SELECT DISTINCT', 'ORDER BY'], says: [grab(S1, /^( +\d+)$/m)],
   side: [
     {
@@ -33,6 +34,7 @@ const between = result(S2, 'BETWEEN')
 const half = result(S2, '03-ranges.sql')
 const missed = half.rows.filter((r) => !between.rows.some((b) => b[0] === r[0]))
 const ranges = sql('query/03-in-between-like', {
+    model: 'TODO',
   lit: "booked_at >= '2026-10-02'", says: ['BETWEEN', ...missed.map((r) => `${r[0]} |`)],
   side: [
     {
@@ -62,6 +64,7 @@ const ranges = sql('query/03-in-between-like', {
 const S3 = session('query/04-null')
 const nulls = result(S3, '04-null.sql')
 const nullLogic = sql('query/04-null', {
+    model: 'TODO',
   lit: 'phone IS NULL', says: ['phone = NULL'],
   side: [
     table('r', `${nulls.rows.length} customers with no phone`, nulls),
@@ -84,6 +87,7 @@ const nullLogic = sql('query/04-null', {
 const S4 = session('query/05-expressions')
 const e4 = result(S4, '7 / 2')
 const expressions = sql('query/05-expressions', {
+    model: 'TODO',
   lit: ["'******'", 'date_trunc'], says: [e4.rows[0][0] + ' |'],
   side: [
     {
@@ -104,6 +108,7 @@ const S5 = session('query/06-case')
 const c5 = result(S5, '06-case.sql')
 const wrong = result(S5, 'CASE WHEN overdraft_limit < 250')
 const caseScene = sql('query/06-case', {
+    model: 'TODO',
   lit: ['  CASE', 'END AS tier'], says: [wrong.rows[0].join(' | ')],
   side: [
     table('r', 'Tiers, branches in the right order', c5),
@@ -123,6 +128,7 @@ const S6 = session('query/07-paging')
 const p1 = result(S6, 'LIMIT 3;')
 const p2 = result(S6, '07-page.sql')
 const paging = sql('query/07-paging', {
+    model: 'TODO',
   lit: ['posting_id > 9041', 'LIMIT 3'],
   side: [
     {
@@ -148,6 +154,7 @@ const S7 = session('query/08-aggregates')
 const bal = result(S7, '08-balances.sql')
 const cnt = result(S7, 'count(phone)')
 const aggregates = sql('query/08-aggregates', {
+    model: 'TODO',
   lit: ['count(*)', 'GROUP BY'], says: ['1016 |'],
   side: [
     table('r', `Balances of ${bal.rows.length} customer accounts`, bal),

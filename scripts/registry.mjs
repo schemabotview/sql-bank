@@ -48,4 +48,5 @@ export function nodesOf(scene) {
 /** A timeline frame is one built by timelineFrame(): two session panes and a side pane. */
 export const isTimeline = (scene) => nodesOf(scene).some(({ node }) => node.id === 'session-a') && nodesOf(scene).some(({ node }) => node.id === 'side')
 
-export const isIde = (scene) => nodesOf(scene).some(({ node }) => node.id === 'explorer') && nodesOf(scene).some(({ node }) => node.id === 'side')
+// An IDE frame is v2's (an `ide-bench` of editor over console, and a side pane; no explorer).
+export const isIde = (scene) => nodesOf(scene).some(({ node }) => node.id === 'ide-bench') && nodesOf(scene).some(({ node }) => node.id === 'side')

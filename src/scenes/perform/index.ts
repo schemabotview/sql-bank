@@ -15,6 +15,7 @@ const table = (id: string, title: string, r: { columns: string[]; rows: string[]
 // §1 — baseline and EXPLAIN.
 const S1 = session('perform/01-baseline')
 const baseline = sql('perform/01-baseline', {
+    model: 'TODO',
   file: 'perform/01-perf-data.sql', lit: ['CREATE TABLE perf.postings', 'FROM generate_series'], says: ['Seq Scan', 'Sort'],
   side: [
     {
@@ -42,6 +43,7 @@ const S2 = session('perform/02-analyze')
 const removed = grab(S2, /Rows Removed by Filter: (\d+)/)
 const stats = result(S2, 'reltuples')
 const analyze = sql('perform/02-analyze', {
+    model: 'TODO',
   lit: 'EXPLAIN (ANALYZE', says: ['Rows Removed by Filter'],
   side: [
     {
@@ -87,6 +89,7 @@ const btree: SceneModel = {
 
 // §4 — composite indexes and index-friendly predicates.
 const composite = sql('perform/04-composite', {
+    model: 'TODO',
   lit: 'CREATE INDEX by_account_day', says: ["Index Cond: ((account_id = 42) AND", 'Filter: (EXTRACT'],
   side: [
     {
@@ -108,6 +111,7 @@ const composite = sql('perform/04-composite', {
 const S5 = session('perform/05-covering')
 const sizes = result(S5, 'pg_stat_user_indexes')
 const covering = sql('perform/05-covering', {
+    model: 'TODO',
   lit: ['CREATE INDEX by_account_day', 'INCLUDE (amount)'], says: ['Index Only Scan', 'Heap Fetches: 0'],
   side: [
     {
@@ -131,6 +135,7 @@ const S6 = session('perform/06-matview')
 const r6 = (n: number) => { const r = S6.split('\n'); const idx = r.reduce<number[]>((a, l, i) => (l.startsWith('syndica=> SELECT postings') ? [...a, i] : a), []); return result(r.slice(idx[n]).join('\n'), 'SELECT postings').rows[0] }
 const stale = r6(0), fresh = r6(1)
 const matview = sql('perform/06-matview', {
+    model: 'TODO',
   lit: ['CREATE MATERIALIZED VIEW', 'CREATE UNIQUE INDEX'], says: ['REFRESH MATERIALIZED'],
   side: [
     {

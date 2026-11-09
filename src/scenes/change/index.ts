@@ -15,6 +15,7 @@ const S1 = session('change/01-update')
 const before = result(S1, 'kyc_status = \'pending\';')
 const after = result(S1, '01-kyc.sql')
 const update = sql('change/01-update', {
+    model: 'TODO',
   lit: ['UPDATE core.customers', 'RETURNING'], says: ['UPDATE 2', '=*> COMMIT'],
   side: [
     {
@@ -34,6 +35,7 @@ const update = sql('change/01-update', {
 const S2 = session('change/02-delete')
 const gone = result(S2, '02-duplicate.sql')
 const del = sql('change/02-delete', {
+    model: 'TODO',
   lit: ['DELETE FROM core.customers', 'RETURNING'], says: ['DELETE 1', 'ERROR:'],
   side: [
     table('r', 'Deleted: the duplicate record', gone, 'consume'),
@@ -51,6 +53,7 @@ const del = sql('change/02-delete', {
 // §3 — INSERT … SELECT.
 const S3 = session('change/03-insert-select')
 const ins = sql('change/03-insert-select', {
+    model: 'TODO',
   lit: ['SELECT a.account_id, c.customer_id', "c.email = 'amelia"], says: ['INSERT 0 1'],
   side: [
     {
@@ -74,6 +77,7 @@ const ins = sql('change/03-insert-select', {
 const S4 = session('change/04-merge')
 const mg = result(S4, '04-branches.sql')
 const merge = sql('change/04-merge', {
+    model: 'TODO',
   lit: ['MERGE INTO', 'RETURNING merge_action()'], says: ['MERGE 2', 'INSERT 0 3'],
   side: [
     table('r', 'MERGE says what it did, row by row (PG 17+)', mg),
@@ -97,6 +101,7 @@ const S5 = session('change/05-reversal')
 const legs = result(S5, '05-refund.sql')
 const pair = result(S5, 'IN (txn_id, reverses)')
 const reversal = sql('change/05-reversal', {
+    model: 'TODO',
   lit: ['WITH r AS (', '-p.amount'], says: [grab(S5, /^ +(\d+\.\d+)\n\(1 row\)\s*$/m)],
   side: [
     {
@@ -118,6 +123,7 @@ const reversal = sql('change/05-reversal', {
 const S6 = session('change/06-audit')
 const log = result(S6, 'FROM audit.customer_changes')
 const audit = sql('change/06-audit', {
+    model: 'TODO',
   from: 'CREATE FUNCTION', lit: ['INSERT INTO audit', 'FOR EACH ROW'], says: ['UPDATE 1', log.rows[0][1]],
   side: [
     {

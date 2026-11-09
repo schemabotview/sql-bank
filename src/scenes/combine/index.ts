@@ -13,6 +13,7 @@ const one = (s: string, cmd: string) => result(s, cmd).rows[0][0]
 // §1 — joins, grain, inner join.
 const S1 = session('combine/01-inner')
 const inner = sql('combine/01-inner', {
+    model: 'TODO',
   lit: 'JOIN ref.branches', says: ['Manchester'],
   side: [
     {
@@ -35,6 +36,7 @@ const inner = sql('combine/01-inner', {
 const S2 = session('combine/02-outer')
 const none = result(S2, '02-no-account.sql')
 const outer = sql('combine/02-outer', {
+    model: 'TODO',
   lit: ['LEFT JOIN core', 'IS NULL'],
   side: [
     table('r', `${none.rows.length} customers with no account`, none, 'consume'),
@@ -52,6 +54,7 @@ const outer = sql('combine/02-outer', {
 const S3 = session('combine/03-self')
 const tr = result(S3, '03-transfers.sql')
 const self = sql('combine/03-self', {
+    model: 'TODO',
   lit: ['JOIN core.postings AS out', 'JOIN core.postings AS inn'],
   side: [
     {
@@ -70,6 +73,7 @@ const self = sql('combine/03-self', {
 const S4 = session('combine/04-amplify')
 const viaA = one(S4, 'via_accounts'), viaC = one(S4, 'via_customers')
 const amplify = sql('combine/04-amplify', {
+    model: 'TODO',
   lit: ['JOIN core.account_holders', 'JOIN core.postings'], says: [viaA, viaC],
   side: [
     table('r', 'Per customer: both include the joint account', result(S4, '04-per-customer.sql'), 'consume'),
@@ -98,6 +102,7 @@ const amplify = sql('combine/04-amplify', {
 // §5 — subqueries.
 const S5 = session('combine/05-subqueries')
 const subqueries = sql('combine/05-subqueries', {
+    model: 'TODO',
   lit: ['CROSS JOIN LATERAL', ') AS last'],
   side: [
     {
@@ -116,6 +121,7 @@ const subqueries = sql('combine/05-subqueries', {
 const S6 = session('combine/06-exists')
 const counts = result(S6, 'count(reverses)').rows[0]
 const exists = sql('combine/06-exists', {
+    model: 'TODO',
   lit: ['WHERE NOT EXISTS', 'r.reverses = t.txn_id'], says: ['NOT IN'],
   side: [
     {
@@ -139,6 +145,7 @@ const exists = sql('combine/06-exists', {
 // §7 — UNION, INTERSECT, EXCEPT.
 const S7 = session('combine/07-sets')
 const sets = sql('combine/07-sets', {
+    model: 'TODO',
   lit: 'EXCEPT',
   side: [
     {
@@ -161,6 +168,7 @@ const sets = sql('combine/07-sets', {
 // §8 — views.
 const S8 = session('combine/08-view')
 const view = sql('combine/08-view', {
+    model: 'TODO',
   lit: ['CREATE VIEW', 'GROUP BY'], says: ['ERROR:'],
   side: [
     {

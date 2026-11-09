@@ -1,7 +1,7 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
 import { ideFrame, lineOf, linesFrom } from '../ide'
 import { grab, output, result } from '../psql'
-import { file, session, tree } from '../spine'
+import { file, session } from '../spine'
 
 // Course 1 — why a database, and first contact. §1–§3 are concept frames; from §4 the IDE frame,
 // every console a replayed psql transcript and every value in a side pane read out of it.
@@ -133,7 +133,7 @@ const F4 = 'start/04-branches.sql'
 const S4 = session(K4)
 const r4 = result(S4, 'start/04-branches.sql')
 const firstTable = ideFrame({
-  tree: tree(K4, F4), editor: { file: F4, code: file(K4, F4), highlight: linesFrom(file(K4, F4), 'CREATE TABLE', ');') },
+  model: 'A table is a promise about shape', editor: { file: F4, code: file(K4, F4), highlight: linesFrom(file(K4, F4), 'CREATE TABLE', ');') },
   session: S4,
   side: [
     {
@@ -145,7 +145,6 @@ const firstTable = ideFrame({
       ],
     },
     { type: 'table', id: 'rows', title: 'ref.branches, as the server returned it', tone: 'store', columns: r4.columns, rows: r4.rows },
-    { type: 'note', id: 'n4', text: 'A table is a promise about shape: every row has the same columns, each value of the column’s type.' },
   ],
   edges: [{ from: 'st1', to: 'st2' }, { from: 'st2', to: 'st3' }, { from: 'st3', to: 'st4' }],
 })
@@ -154,9 +153,8 @@ const firstTable = ideFrame({
 const K5 = 'start/05-anatomy'
 const F5 = 'start/05-anatomy.sql'
 const S5 = session(K5)
-const r5 = result(S5, 'start/05-anatomy.sql')
 const anatomy = ideFrame({
-  tree: tree(K5, F5), editor: { file: F5, code: file(K5, F5), highlight: linesFrom(file(K5, F5), 'SELECT code', "'2015-01-01'") },
+  model: 'Keywords, identifiers, literals', editor: { file: F5, code: file(K5, F5), highlight: linesFrom(file(K5, F5), 'SELECT code', "'2015-01-01'") },
   session: S5, sessionHighlight: [lineOf(S5, 'ERROR:')],
   side: [
     {
@@ -170,21 +168,22 @@ const anatomy = ideFrame({
         ['-- …', 'comment: ignored'],
       ],
     },
-    { type: 'table', id: 'r5', title: 'Branches opened before 2015', tone: 'store', columns: r5.columns, rows: r5.rows },
     {
-      type: 'table', id: 'case', title: 'Names fold to lower case — unless quoted', tone: 'consume', columns: ['you write', 'the server reads'], rows: [
-        ['city, CITY, City', 'city'],
-        { id: 'quoted', cells: ['"City"', '"City": no such column'], tone: 'consume' },
+      type: 'group', id: 'fold', title: 'Names fold to lower case, unless quoted', icon: 'filter', tone: 'consume', children: [
+        { type: 'item', id: 'f-plain', title: 'city, CITY, City', sub: 'you write', icon: 'code' },
+        { type: 'item', id: 'f-city', title: 'city', sub: 'the server reads: the column', icon: 'check', tone: 'store' },
+        { type: 'item', id: 'f-quoted', title: '"City"', sub: 'kept as written: no such column', icon: 'bell', tone: 'consume' },
       ],
     },
   ],
+  edges: [{ from: 'f-plain', to: 'f-city', label: 'folded' }, { from: 'f-city', to: 'f-quoted', label: 'but' }],
 })
 
 // §6 — psql itself.
 const K6 = 'start/06-psql'
 const S6 = session(K6)
 const psql = ideFrame({
-  tree: tree(K6), editor: { file: F4, code: file(K6, F4), highlight: linesFrom(file(K6, F4), 'CREATE TABLE', ');') },
+  model: 'psql, the client; the server answers SQL', editor: { file: F4, code: file(K6, F4), highlight: linesFrom(file(K6, F4), 'CREATE TABLE', ');') },
   session: S6, sessionHighlight: [lineOf(S6, '=*> INSERT'), lineOf(S6, '=*> ROLLBACK')],
   side: [
     {
@@ -227,7 +226,7 @@ const K7 = 'start/07-errors'
 const S7 = session(K7)
 const state = grab(S7, /^(\d{5})$/m)
 const errors = ideFrame({
-  tree: tree(K7), editor: { file: F4, code: file(K7, F4), highlight: [lineOf(file(K7, F4), 'city ')] },
+  model: 'An error refuses; a stray quote does not', editor: { file: F4, code: file(K7, F4), highlight: [lineOf(file(K7, F4), 'city ')] },
   session: S7, sessionHighlight: [lineOf(S7, "syndica'>"), ...linesFrom(S7, 'ERROR:', 'HINT:')],
   side: [
     {

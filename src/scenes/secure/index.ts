@@ -16,6 +16,7 @@ const table = (id: string, title: string, r: { columns: string[]; rows: string[]
 const S1 = session('secure/01-roles')
 const m = result(S1, 'roles/matrix.sql')
 const roles = sql('secure/01-roles', {
+    model: 'TODO',
   file: 'roles/01-roles.sql', lit: ['GRANT USAGE', 'GRANT SELECT ON ALL TABLES'], says: ['psql -q -U postgres'],
   side: [
     table('m', 'The permission matrix, from has_table_privilege()', { columns: ['role', 'table', 'SELECT', 'INSERT', 'UPDATE'], rows: m.rows.map((r) => [r[0].replace('syndica_', ''), r[1].replace('core.', ''), ...r.slice(2).map((v) => (v === 't' ? 'yes' : '—'))]) }),
@@ -31,6 +32,7 @@ const roles = sql('secure/01-roles', {
 // §2 — least privilege, and an append-only ledger.
 const S2 = session('secure/02-least')
 const least = sql('secure/02-least', {
+    model: 'TODO',
   lit: ['REVOKE UPDATE, DELETE, TRUNCATE ON core.postings', 'SECURITY DEFINER'], says: ['permission denied for table postings'],
   side: [
     {
@@ -55,6 +57,7 @@ const least = sql('secure/02-least', {
 // §3 — masking views and row-level security.
 const S3 = session('secure/03-rls')
 const rls = sql('secure/03-rls', {
+    model: 'TODO',
   lit: ['ENABLE ROW LEVEL SECURITY', "USING (branch_code = 'LDS')"], says: ['permission denied for table customers'],
   side: [
     {
@@ -77,6 +80,7 @@ const rls = sql('secure/03-rls', {
 const S4 = session('secure/04-injection')
 const counts = [...S4.matchAll(/^ +(\d+)\n\(1 row\)/gm)].map((x) => x[1])
 const injection = sql('secure/04-injection', {
+    model: 'TODO',
   lit: ['PREPARE search(text)', 'reference = $1'], says: ["''%s''", '%L'],
   side: [
     {

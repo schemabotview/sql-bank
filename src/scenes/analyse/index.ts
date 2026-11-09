@@ -14,6 +14,7 @@ const table = (id: string, title: string, r: { columns: string[]; rows: string[]
 const S1 = session('analyse/01-cte')
 const st = result(S1, '01-statement.sql')
 const cte = sql('analyse/01-cte', {
+    model: 'TODO',
   lit: ['WITH tom AS', 'FROM opening, october'],
   side: [
     {
@@ -34,6 +35,7 @@ const cte = sql('analyse/01-cte', {
 const S2 = session('analyse/02-recursive')
 const ch = result(S2, '02-chain.sql')
 const recursive = sql('analyse/02-recursive', {
+    model: 'TODO',
   lit: ['), chain AS (', ') CYCLE src'], says: [' t'],
   side: [
     {
@@ -60,6 +62,7 @@ const S3 = session('analyse/03-running')
 const run = result(S3, '03-running.sql')
 const low = run.rows.reduce((m, r) => (Number(r[3]) < Number(m[3]) ? r : m))
 const running = sql('analyse/03-running', {
+    model: 'TODO',
   lit: 'OVER (ORDER BY', says: [low[3]],
   side: [
     table('r', "Tom's statement, every line with its balance", { columns: ['day', 'amount', 'balance'], rows: run.rows.map((r) => [r[0], r[2], r[3]]) }),
@@ -78,6 +81,7 @@ const running = sql('analyse/03-running', {
 const S4 = session('analyse/04-frames')
 const fr = result(S4, '04-frames.sql')
 const frames = sql('analyse/04-frames', {
+    model: 'TODO',
   lit: ['ROWS  UNBOUNDED', 'RANGE UNBOUNDED'], says: [' 2400.00 |'],
   side: [
     table('r', 'The first three transactions, summed two ways', { columns: ['txn', 'amount', 'ROWS', 'RANGE'], rows: fr.rows.map((r) => [r[0], r[2], r[3], r[4]]) }, 'consume'),
@@ -96,6 +100,7 @@ const S5 = session('analyse/05-ranking')
 const rk = result(S5, '05-rank.sql')
 const dup = result(S5, 'PARTITION BY full_name')
 const ranking = sql('analyse/05-ranking', {
+    model: 'TODO',
   lit: ['rank()', 'row_number()'], says: [dup.rows[0][1]],
   side: [
     table('r', 'Card payments per account, three ways to rank', { columns: ['account', 'payments', 'rank', 'dense', 'row'], rows: rk.rows }),
@@ -113,6 +118,7 @@ const S6 = session('analyse/06-lag')
 const mo = result(S6, '06-lag.sql')
 const gaps = result(S6, 'AS gap')
 const lag = sql('analyse/06-lag', {
+    model: 'TODO',
   lit: ['lag(card_spend)', 'card_spend - lag'], says: [mo.rows[1][3]],
   side: [
     table('r', 'Card spending, month on month', { columns: ['month', 'spend', 'previous', 'change'], rows: mo.rows.map((r) => r.map((c) => c || '—')) }),
@@ -125,6 +131,7 @@ const lag = sql('analyse/06-lag', {
 const S7 = session('analyse/07-islands')
 const isl = result(S7, '07-islands.sql')
 const islands = sql('analyse/07-islands', {
+    model: 'TODO',
   from: 'WITH days AS', lit: ['day - row_number()', 'GROUP BY island'],
   side: [
     table('r', 'Runs of days Tom ended overdrawn', isl, 'consume'),
@@ -141,6 +148,7 @@ const islands = sql('analyse/07-islands', {
 const S8 = session('analyse/08-rollup')
 const ru = result(S8, '08-rollup.sql')
 const rollup = sql('analyse/08-rollup', {
+    model: 'TODO',
   lit: ['FILTER', 'GROUP BY ROLLUP'], says: [ru.rows.at(-1)![2]],
   side: [
     table('r', 'Balances, with subtotals', { columns: ['branch', 'kind', 'balance', 'open', 'level'], rows: ru.rows.map((r) => r.map((c) => c || '(all)')) }),

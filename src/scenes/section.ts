@@ -1,13 +1,15 @@
 import type { Edge, SceneModel, SceneNode } from '@graphlearning/graphl-flow'
 import { view } from './fold'
 import { EDITOR_ROWS, ideFrame, lastLine, lineOf, linesFrom } from './ide'
-import { file, session, step, tree } from './spine'
+import { file, session, step } from './spine'
 
 // One IDE section in one call — the shape every query-style section shares: the step's SQL file in
 // the editor (the one it added, or the newest before it), its replayed session in the console, and
 // a side pane. Highlights are found by TEXT, never typed as line numbers.
 
 export interface Section {
+  /** The side pane's title: the section's mental model, in a few words. */
+  model: string
   /** The editor's file; default: the single file the step added. */
   file?: string
   /** Editor lines to tint: a text, or [first, last] texts for a run. */
@@ -28,7 +30,7 @@ export function sql(key: string, o: Section): SceneModel {
   const s = session(key)
   const fold = o.from ? view(code, o.from, undefined, 0) : lastLine(code) > EDITOR_ROWS ? view(code, 'SELECT', undefined, 2) : {}
   return ideFrame({
-    tree: tree(key, path),
+    model: o.model,
     editor: { file: path, code, ...fold, highlight: o.lit ? lines(code, o.lit) : undefined },
     session: s,
     sessionHighlight: o.says?.map((t) => lineOf(s, t)),

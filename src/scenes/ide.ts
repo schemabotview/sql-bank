@@ -11,7 +11,7 @@ import type { Code, Edge, Group, SceneModel, SceneNode } from '@graphlearning/gr
 // ONE fit, at ~2.8× (v1's 1736-wide frame drew at ~2.2×). Two things are this repo's:
 //   - the work column is the CONSOLE's, 760 (80 columns: 80 × 9.0px + 30 padding + 2 borders): a psql
 //     transcript is real 80-column output — the runner refuses a typed line that wraps at 80 — so it
-//     is never re-wrapped narrower. The editor shares that column: 77 columns beside its gutter, a
+//     is never re-wrapped narrower. The editor shares that column: 76 columns beside its gutter, a
 //     longer SQL line soft-wraps.
 //   - there is no explorer: the editor's tab names the file, no narration walks the tree, and the
 //     side pane takes the explorer's column (574), room for a schema drawn as tables.
@@ -30,8 +30,8 @@ export const FRAME_H = Math.round(FULL_W / (16 / 9))
 export const WORK_W = 760
 export const SIDE_W = FULL_W - WORK_W - GAP
 export const EDITOR_COLS = 80
-/** The editor's soft-wrap point: 77 columns fit 760px beside the line-number gutter. */
-const EDITOR_WRAP = 77
+/** The editor's soft-wrap point: 76 columns fit 760px beside the line-number gutter (a 77th wraps). */
+const EDITOR_WRAP = 76
 /** Rows the editor and the console share: (FRAME_H − GAP − two panes' chrome) / ROW. */
 export const ROWS = Math.floor((FRAME_H - GAP - 2 * CHROME) / ROW)
 /** The most a console shows (autoShow folds a longer session to this); the editor keeps the rest. */
@@ -197,10 +197,12 @@ function grow(lines: string[], ranges: [number, number][], room: number): [numbe
 
 /** Rows a console draws: its lines, or its `show` ranges with each skipped run folded to one row. */
 function consoleRows(text: string, show?: [number, number][]): number {
+  // A row wider than the console's 80 columns wraps, as a terminal wraps it: each piece is a row.
   const lines = trim(text).split('\n')
-  if (!show) return lines.length
+  const tall = (a: number, b: number) => lines.slice(a - 1, b).reduce((n, l) => n + Math.max(1, Math.ceil(l.length / EDITOR_COLS)), 0)
+  if (!show) return tall(1, lines.length)
   let rows = 0, next = 1
-  for (const [a, b] of show) { if (a > next) rows++; rows += b - a + 1; next = b + 1 }
+  for (const [a, b] of show) { if (a > next) rows++; rows += tall(a, b); next = b + 1 }
   return rows + (next <= lines.length ? 1 : 0)
 }
 

@@ -15,7 +15,7 @@ const table = (id: string, title: string, r: { columns: string[]; rows: string[]
 // §1 — baseline and EXPLAIN.
 const S1 = session('perform/01-baseline')
 const baseline = sql('perform/01-baseline', {
-    model: 'TODO',
+    model: 'Read the plan from the bottom up',
   file: 'perform/01-perf-data.sql', lit: ['CREATE TABLE perf.postings', 'FROM generate_series'], says: ['Seq Scan', 'Sort'],
   side: [
     {
@@ -27,13 +27,12 @@ const baseline = sql('perform/01-baseline', {
     },
     {
       type: 'table', id: 'rules', title: 'Before tuning anything', tone: 'store', columns: ['rule', 'here'], rows: [
-        ['the query is correct first', 'perform/statement.sql'],
-        ['data shaped like production', `${grab(S1, /^SELECT (\d+)$/m)} postings, 300 accounts`],
+        ['correct first', 'statement.sql'],
+        ['production-shaped', `${grab(S1, /^SELECT (\d+)$/m)} postings`],
         ['fresh statistics', 'VACUUM ANALYZE'],
-        ['measure, then change ONE thing', 'every section below'],
+        ['change ONE thing', 'then measure'],
       ],
     },
-    { type: 'note', id: 'n', text: 'Ten lines on the page; thirty thousand rows read to find them. Every step of this stage is measured against this plan.' },
   ],
   edges: [{ from: 'p1', to: 'p2' }, { from: 'p2', to: 'p3' }],
 })
@@ -43,19 +42,19 @@ const S2 = session('perform/02-analyze')
 const removed = grab(S2, /Rows Removed by Filter: (\d+)/)
 const stats = result(S2, 'reltuples')
 const analyze = sql('perform/02-analyze', {
-    model: 'TODO',
+    model: 'EXPLAIN ANALYZE counts the work',
   lit: 'EXPLAIN (ANALYZE', says: ['Rows Removed by Filter'],
   side: [
     {
-      type: 'table', id: 'work', title: 'Work done for 10 rows', tone: 'consume', columns: ['measure', 'value'], rows: [
-        ['rows returned', grab(S2, /Seq Scan on postings \(actual rows=(\d+)/)],
-        { id: 'rm', cells: ['rows read and thrown away', removed], tone: 'consume' },
-        ['pages read: the whole table', stats.rows[0][1]],
+      type: 'group', id: 'work', title: 'Work done for 10 rows', icon: 'workflow', tone: 'consume', children: [
+        { type: 'item', id: 'w-read', title: `${stats.rows[0][1]} pages read`, sub: 'the whole table', icon: 'disk' },
+        { type: 'item', id: 'w-rm', title: `${removed} rows thrown away`, sub: 'Rows Removed by Filter', icon: 'filter', tone: 'consume' },
+        { type: 'item', id: 'w-kept', title: `${grab(S2, /Seq Scan on postings \(actual rows=(\d+)/)} rows returned`, sub: 'the statement page', icon: 'check', tone: 'store' },
       ],
     },
     table('st', 'What the planner believed (pg_class)', stats, 'ingest'),
-    { type: 'note', id: 'n', text: 'EXPLAIN shows the plan; EXPLAIN ANALYZE also RUNS it and counts. Estimates come from statistics — stale ones are the commonest reason for a bad plan.' },
   ],
+  edges: [{ from: 'w-read', to: 'w-rm' }, { from: 'w-rm', to: 'w-kept' }],
 })
 
 // §3 — ◆ how a B-tree index finds rows.
@@ -89,29 +88,30 @@ const btree: SceneModel = {
 
 // §4 — composite indexes and index-friendly predicates.
 const composite = sql('perform/04-composite', {
-    model: 'TODO',
+    model: 'An index seeks on its leading columns',
   lit: 'CREATE INDEX by_account_day', says: ["Index Cond: ((account_id = 42) AND", 'Filter: (EXTRACT'],
   side: [
     {
-      type: 'table', id: 'cmp', title: 'Two ways to say "April"', tone: 'consume', columns: ['predicate', 'the index uses'], rows: [
-        { id: 'r', cells: ["booked_on >= '2026-04-01'", 'both columns: Index Cond'], tone: 'store' },
-        { id: 'f', cells: ['extract(month FROM booked_on) = 4', 'account only; month is a Filter'], tone: 'consume' },
+      type: 'group', id: 'cmp', title: 'Two ways to say "April"', icon: 'filter', tone: 'consume', children: [
+        { type: 'item', id: 'idx', title: 'INDEX (account_id, booked_on)', sub: 'sorted by the column, not by a function of it', icon: 'layers' },
+        { type: 'item', id: 'c-r', title: "booked_on >= '2026-04-01' …", sub: 'both columns: Index Cond', icon: 'check', tone: 'store' },
+        { type: 'item', id: 'c-f', title: 'extract(month FROM booked_on) = 4', sub: 'account only: the month is a Filter', icon: 'bell', tone: 'consume' },
       ],
     },
     {
       type: 'table', id: 'order', title: 'Column order in (account_id, booked_on)', tone: 'ingest', columns: ['query', 'uses the index?'], rows: [
-        ['account = 42 AND day >= …', 'fully: equality, then range'], ['account = 42', 'yes: the leading column'], ['day >= … alone', 'poorly: not the leading column'],
+        ['account AND day', 'fully'], ['account alone', 'yes: leading'], ['day alone', 'poorly'],
       ],
     },
-    { type: 'note', id: 'n', text: 'An index is sorted by the column, not by a function of it. Wrap the column in a function and the index can no longer seek on it: compare the column to a range instead.' },
   ],
+  edges: [{ from: 'idx', to: 'c-r' }, { from: 'c-r', to: 'c-f', label: 'but' }],
 })
 
 // §5 — partial and covering indexes; the write cost.
 const S5 = session('perform/05-covering')
 const sizes = result(S5, 'pg_stat_user_indexes')
 const covering = sql('perform/05-covering', {
-    model: 'TODO',
+    model: 'A covering index answers alone',
   lit: ['CREATE INDEX by_account_day', 'INCLUDE (amount)'], says: ['Index Only Scan', 'Heap Fetches: 0'],
   side: [
     {
@@ -122,12 +122,12 @@ const covering = sql('perform/05-covering', {
     },
     table('sz', 'Every index is a second copy to keep', sizes, 'consume'),
     {
-      type: 'table', id: 'cost', title: 'The write cost', tone: 'ingest', columns: ['each INSERT into postings', 'writes'], rows: [
-        ['the table row', '1'], ['every index entry', String(sizes.rows.length)], { id: 'p', cells: ['a partial index (WHERE …)', 'only matching rows: smaller'], tone: 'store' },
+      type: 'table', id: 'cost', title: 'The write cost', tone: 'ingest', columns: ['each INSERT writes', 'rows'], rows: [
+        ['the table row', '1'], ['every index entry', String(sizes.rows.length)], { id: 'p', cells: ['a partial index', 'matching only'], tone: 'store' },
       ],
     },
   ],
-  edges: [{ from: 'i1', to: 'i2' }],
+  edges: [{ from: 'io', to: 'sz', label: 'at a cost' }, { from: 'i1', to: 'i2' }],
 })
 
 // §6 — materialized views.
@@ -135,21 +135,22 @@ const S6 = session('perform/06-matview')
 const r6 = (n: number) => { const r = S6.split('\n'); const idx = r.reduce<number[]>((a, l, i) => (l.startsWith('syndica=> SELECT postings') ? [...a, i] : a), []); return result(r.slice(idx[n]).join('\n'), 'SELECT postings').rows[0] }
 const stale = r6(0), fresh = r6(1)
 const matview = sql('perform/06-matview', {
-    model: 'TODO',
+    model: 'A materialized view stores the result',
   lit: ['CREATE MATERIALIZED VIEW', 'CREATE UNIQUE INDEX'], says: ['REFRESH MATERIALIZED'],
   side: [
     {
-      type: 'table', id: 'fresh', title: '10 April, before and after REFRESH', tone: 'consume', columns: ['moment', 'postings', 'net'], rows: [
-        { id: 's', cells: ['after the INSERT', stale[0], stale[1]], tone: 'consume' }, { id: 'f', cells: ['after REFRESH', fresh[0], fresh[1]], tone: 'store' },
+      type: 'group', id: 'fresh', title: '10 April, before and after REFRESH', icon: 'clock', tone: 'consume', children: [
+        { type: 'item', id: 'f-stale', title: `after the INSERT: ${stale[0]} postings, ${stale[1]}`, sub: 'the stored result, unchanged', icon: 'layers', tone: 'consume' },
+        { type: 'item', id: 'f-fresh', title: `after REFRESH: ${fresh[0]} postings, ${fresh[1]}`, sub: 'the query, run again', icon: 'check', tone: 'store' },
       ],
     },
     {
-      type: 'table', id: 'kinds', title: 'View or materialized view?', tone: 'ingest', columns: ['', 'view', 'materialized view'], rows: [
-        ['stores', 'the query', 'the RESULT'], ['reading', 'runs the query', 'reads a table: fast'], ['fresh?', 'always', 'as of the last REFRESH'],
+      type: 'table', id: 'kinds', title: 'View or materialized view?', tone: 'ingest', columns: ['', 'view', 'materialized'], rows: [
+        ['stores', 'the query', 'the RESULT'], ['reading', 'runs it', 'a table: fast'], ['fresh?', 'always', 'last REFRESH'],
       ],
     },
-    { type: 'note', id: 'n', text: 'In production, pg_stat_statements ranks every query by total time — it is how the team would have found this page. (Described, not run: its timings change on every replay.)' },
   ],
+  edges: [{ from: 'f-stale', to: 'f-fresh', label: 'REFRESH' }],
 })
 
 export const performScenes: Record<string, SceneModel> = {

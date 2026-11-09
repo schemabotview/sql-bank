@@ -124,25 +124,18 @@ const F4 = 'design/04-sheet.sql'
 const S4 = session(K4)
 const r4 = result(S4, 'SELECT account_no, holder, email')
 const normalise = ideFrame({
-  model: 'TODO', editor: { file: F4, code: file(K4, F4), highlight: linesFrom(file(K4, F4), "('SY40000013', 'Chloe", "('SY40000014', 'Chloe") },
+  model: 'Store each fact once', editor: { file: F4, code: file(K4, F4), highlight: linesFrom(file(K4, F4), "('SY40000013', 'Chloe", "('SY40000014', 'Chloe") },
   session: S4, sessionHighlight: linesFrom(S4, 'SY40000013 | Chloe', 'SY40000014 | Chloe'),
   side: [
     { type: 'table', id: 'now', title: "Chloe's email, after one UPDATE", tone: 'consume', columns: r4.columns, rows: r4.rows },
     {
-      type: 'table', id: 'anomalies', title: 'What repetition costs', tone: 'consume', columns: ['anomaly', 'in this sheet'], rows: [
-        ['update', 'change one copy, the other disagrees'],
-        ['insert', 'no account yet: nowhere to put a customer'],
-        ['delete', 'close the last account: the customer is gone'],
-      ],
-    },
-    {
-      type: 'group', id: 'split', title: 'Each fact stored once', icon: 'table', tone: 'store', dir: 'row', children: [
+      type: 'group', id: 'split', title: 'Each fact stored once', icon: 'table', tone: 'store', children: [
         { type: 'table', id: 'h', title: 'account_holders', columns: ['customer', 'account'], rows: [{ id: 'h1', cells: ['Chloe', 'SY40000013'] }, { id: 'h2', cells: ['Marcus', 'SY40000013'] }, { id: 'h3', cells: ['Chloe', 'SY40000014'] }] },
         { type: 'table', id: 'c', title: 'customers', columns: ['name', 'email: once'], rows: [{ id: 'chloe', cells: ['Chloe Price', 'chloe@example.org'] }, { id: 'marcus', cells: ['Marcus Reid', 'marcus.reid@…'] }] },
       ],
     },
   ],
-  edges: [{ from: 'h', to: 'c', label: 'points at' }],
+  edges: [{ from: 'now', to: 'split', label: 'stored once' }, { from: 'h', to: 'c', label: 'points at' }],
 })
 
 // §5 — ◆ double-entry bookkeeping. The lab's VALUES are the two example transactions.

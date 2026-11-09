@@ -13,7 +13,7 @@ const table = (id: string, title: string, r: { columns: string[]; rows: string[]
 // §1 — SELECT, DISTINCT, result grain.
 const S1 = session('query/01-grain')
 const grain = sql('query/01-grain', {
-    model: 'TODO',
+    model: 'Say what one row means',
   lit: ['SELECT DISTINCT', 'ORDER BY'], says: [grab(S1, /^( +\d+)$/m)],
   side: [
     {
@@ -23,7 +23,6 @@ const grain = sql('query/01-grain', {
       ],
     },
     table('r', 'Branch × kind, as returned', result(S1, '01-grain.sql')),
-    { type: 'note', id: 'n', text: 'Before reading an answer, say what ONE row of it means. Most wrong reports are right numbers at the wrong grain.' },
   ],
   edges: [{ from: 'g1', to: 'g2', label: 'DISTINCT' }],
 })
@@ -34,7 +33,7 @@ const between = result(S2, 'BETWEEN')
 const half = result(S2, '03-ranges.sql')
 const missed = half.rows.filter((r) => !between.rows.some((b) => b[0] === r[0]))
 const ranges = sql('query/03-in-between-like', {
-    model: 'TODO',
+    model: 'BETWEEN\'s end is midnight',
   lit: "booked_at >= '2026-10-02'", says: ['BETWEEN', ...missed.map((r) => `${r[0]} |`)],
   side: [
     {
@@ -49,13 +48,6 @@ const ranges = sql('query/03-in-between-like', {
         { type: 'item', id: 'w2', title: `txn ${missed[0][0]}: ${missed[0][2]}`, sub: `booked ${missed[0][3]} — after midnight, so outside`, tone: 'consume' },
       ],
     },
-    {
-      type: 'table', id: 'ops', title: 'The other shorthands', tone: 'ingest', columns: ['condition', 'means'], rows: [
-        ["kind IN ('card', 'fee')", "kind = 'card' OR kind = 'fee'"],
-        ["reference LIKE 'CAFE%'", 'starts with CAFE; % is any text'],
-        ['found', `${grab(S2, /^ +(\d+)\n\(1 row\)\s*$/m)} café transactions`],
-      ],
-    },
   ],
   edges: [{ from: 'w1', to: 'w2' }],
 })
@@ -64,43 +56,40 @@ const ranges = sql('query/03-in-between-like', {
 const S3 = session('query/04-null')
 const nulls = result(S3, '04-null.sql')
 const nullLogic = sql('query/04-null', {
-    model: 'TODO',
+    model: 'NULL compares to nothing',
   lit: 'phone IS NULL', says: ['phone = NULL'],
   side: [
     table('r', `${nulls.rows.length} customers with no phone`, nulls),
     {
-      type: 'table', id: 'tv', title: 'Comparing with NULL is UNKNOWN, never true', tone: 'consume', columns: ['test', 'result', 'row kept?'], rows: [
-        ["phone = '+44 7700 900111'", 'true / false / unknown', 'only if true'],
-        { id: 'eq', cells: ['phone = NULL', 'always unknown', `never: ${grab(S3, /^ +(\d+)\n\(1 row\)/m)} rows`], tone: 'consume' },
-        { id: 'is', cells: ['phone IS NULL', 'true or false', `${nulls.rows.length} rows`], tone: 'store' },
-      ],
-    },
-    {
-      type: 'table', id: 'ne', title: '<> drops the NULLs too', tone: 'ingest', columns: ['customers', 'count'], rows: [
-        ['all', '14'], ["phone <> Olivia's", result(S3, "phone <> '+44").rows[0][0]], ['missing', `Olivia + ${nulls.rows.length} with no phone`],
+      type: 'group', id: 'cmp', title: 'Comparing with NULL is unknown, never true', icon: 'filter', tone: 'consume', children: [
+        { type: 'item', id: 'eq', title: 'WHERE phone = NULL', sub: 'always unknown', icon: 'code' },
+        { type: 'item', id: 'eqr', title: `${grab(S3, /^ +(\d+)\n\(1 row\)/m)} rows`, sub: 'a row is kept only if true', icon: 'bell', tone: 'consume' },
+        { type: 'item', id: 'is', title: 'WHERE phone IS NULL', sub: 'true or false', icon: 'code' },
+        { type: 'item', id: 'isr', title: `${nulls.rows.length} rows`, sub: 'the customers with no phone', icon: 'check', tone: 'store' },
       ],
     },
   ],
+  edges: [{ from: 'eq', to: 'eqr' }, { from: 'is', to: 'isr' }],
 })
 
 // §4 — expressions, casts, functions.
 const S4 = session('query/05-expressions')
 const e4 = result(S4, '7 / 2')
 const expressions = sql('query/05-expressions', {
-    model: 'TODO',
+    model: 'An expression per column; the types decide',
   lit: ["'******'", 'date_trunc'], says: [e4.rows[0][0] + ' |'],
   side: [
     {
-      type: 'table', id: 'ints', title: 'Arithmetic follows the types', tone: 'consume', columns: ['expression', 'gives', 'because'], rows: [
-        { id: 'id', cells: ['7 / 2', e4.rows[0][0], 'integer ÷ integer drops the fraction'], tone: 'consume' },
-        ['7 / 2.0', e4.rows[0][1].replace(/0+$/, '0'), 'one numeric side: exact'],
-        ['round(2.675, 2)', e4.rows[0][2], 'numeric rounds half away from zero'],
-        ["'42'::int + 1", e4.rows[0][3], ':: casts text to a number'],
+      type: 'group', id: 'types', title: 'Arithmetic follows the types', icon: 'cpu', tone: 'consume', children: [
+        { type: 'item', id: 'i1', title: '7 / 2', sub: 'integer ÷ integer', icon: 'code' },
+        { type: 'item', id: 'i1r', title: e4.rows[0][0], sub: 'the fraction dropped', icon: 'bell', tone: 'consume' },
+        { type: 'item', id: 'i2', title: '7 / 2.0', sub: 'one numeric side', icon: 'code' },
+        { type: 'item', id: 'i2r', title: e4.rows[0][1].replace(/0+$/, '0'), sub: 'exact', icon: 'check', tone: 'store' },
       ],
     },
     table('r', 'Overdrafts, computed per row', { columns: ['account', 'masked', 'monthly cost'], rows: result(S4, '05-expressions.sql').rows.map((r) => [r[0], r[1], r[3]]) }),
-    { type: 'note', id: 'n', text: 'Every column of a SELECT can be an expression. right() masks, date_trunc() rounds a date down to its month, round() fixes money to pence.' },
   ],
+  edges: [{ from: 'i1', to: 'i1r' }, { from: 'i2', to: 'i2r' }],
 })
 
 // §5 — CASE.
@@ -108,7 +97,7 @@ const S5 = session('query/06-case')
 const c5 = result(S5, '06-case.sql')
 const wrong = result(S5, 'CASE WHEN overdraft_limit < 250')
 const caseScene = sql('query/06-case', {
-    model: 'TODO',
+    model: 'CASE: the first true branch wins',
   lit: ['  CASE', 'END AS tier'], says: [wrong.rows[0].join(' | ')],
   side: [
     table('r', 'Tiers, branches in the right order', c5),
@@ -128,7 +117,7 @@ const S6 = session('query/07-paging')
 const p1 = result(S6, 'LIMIT 3;')
 const p2 = result(S6, '07-page.sql')
 const paging = sql('query/07-paging', {
-    model: 'TODO',
+    model: 'Page by a unique key, not by OFFSET',
   lit: ['posting_id > 9041', 'LIMIT 3'],
   side: [
     {
@@ -144,7 +133,6 @@ const paging = sql('query/07-paging', {
         ['a new row', 'shifts every page', 'moves nothing seen'],
       ],
     },
-    { type: 'note', id: 'n', text: 'Without ORDER BY there is no order. Order by something UNIQUE — posting_id — or ties can swap between pages.' },
   ],
   edges: [{ from: 'p1', to: 'p2', label: 'continue' }],
 })
@@ -152,17 +140,20 @@ const paging = sql('query/07-paging', {
 // §7 — aggregates, GROUP BY, HAVING.
 const S7 = session('query/08-aggregates')
 const bal = result(S7, '08-balances.sql')
-const cnt = result(S7, 'count(phone)')
 const aggregates = sql('query/08-aggregates', {
-    model: 'TODO',
+    model: 'GROUP BY: one row per group',
   lit: ['count(*)', 'GROUP BY'], says: ['1016 |'],
   side: [
-    table('r', `Balances of ${bal.rows.length} customer accounts`, bal),
     {
-      type: 'table', id: 'counts', title: 'count(*) counts rows; count(col) counts values', tone: 'ingest', columns: ['count(*)', 'count(phone)'], rows: [cnt.rows[0]],
+      type: 'group', id: 'flow', title: 'From postings to balances', icon: 'workflow', tone: 'ingest', children: [
+        { type: 'item', id: 'f-rows', title: 'core.postings', sub: 'one row per posting', icon: 'table' },
+        { type: 'item', id: 'f-group', title: 'GROUP BY account_id', sub: 'one group per account with postings', icon: 'layers' },
+        { type: 'item', id: 'f-sum', title: 'sum(amount)', sub: 'one row per group: no postings, no row', icon: 'check', tone: 'store' },
+      ],
     },
-    { type: 'note', id: 'n', text: 'One row per GROUP: postings were grouped by account, then summed. An account with no postings has no group, so it is not in the answer at all.' },
+    table('r', `Balances of ${bal.rows.length} customer accounts: the first 5`, { columns: bal.columns, rows: bal.rows.slice(0, 5) }),
   ],
+  edges: [{ from: 'f-rows', to: 'f-group' }, { from: 'f-group', to: 'f-sum' }],
 })
 
 // §8 — ◆ logical processing order.

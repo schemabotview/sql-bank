@@ -93,7 +93,7 @@ const legs = result(S5, '05-refund.sql')
 const pair = result(S5, 'IN (txn_id, reverses)')
 const reversal = sql('change/05-reversal', {
     model: 'A mistake is reversed, never edited',
-  lit: ['WITH r AS (', '-p.amount'], says: [grab(S5, /^ +(\d+\.\d+)\n\(1 row\)\s*$/m)],
+  lit: ['WITH r AS (', 'RETURNING txn_id, reverses'], says: [grab(S5, /^ +(\d+\.\d+)\n\(1 row\)\s*$/m)],
   side: [
     {
       type: 'group', id: 'pair', title: 'Fee and refund: both stay in the ledger', icon: 'log', tone: 'ingest', dir: 'row', children: [

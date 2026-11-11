@@ -14,7 +14,9 @@ const K1 = 'build/01-customers', F1 = 'build/01-customers.sql'
 const S1 = session(K1)
 const r1 = result(S1, 'RETURNING customer_id')
 const customers = ideFrame({
-  model: 'Some columns the database fills', editor: { file: F1, code: file(K1, F1), highlight: [lineOf(file(K1, F1), 'IDENTITY'), lineOf(file(K1, F1), 'DEFAULT')] },
+  model: 'Some columns the database fills', editor: { file: F1, code: file(K1, F1), highlight: [lineOf(file(K1, F1), 'IDENTITY'), lineOf(file(K1, F1), 'DEFAULT')],
+    // frame v2's 72-column console takes more rows: the editor may show just the two lines
+    show: [[lineOf(file(K1, F1), 'IDENTITY'), lineOf(file(K1, F1), 'IDENTITY')], [lineOf(file(K1, F1), 'DEFAULT'), lineOf(file(K1, F1), 'DEFAULT')]] },
   session: S1, sessionHighlight: [lineOf(S1, 'RETURNING'), ...linesFrom(S1, 'ERROR:', 'HINT:')],
   side: [
     {

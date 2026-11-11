@@ -106,7 +106,8 @@ for (const [id, scene] of Object.entries(SCENES)) {
   if (term) {
     const { lines, keep, rows } = drawn(term)
     if (rows > IDE.TERMINAL_ROWS) problems.push(`scene ${id}  the console shows ${rows} rows; it holds ${IDE.TERMINAL_ROWS} — fold with sessionShow`)
-    const wide = lines.filter((_, i) => !keep || keep.has(i + 1)).find((l) => l.length > IDE.EDITOR_COLS)
+    // A typed row is the console's to wrap (graphl-flow wraps a command at its `cols`).
+    const wide = lines.filter((_, i) => !keep || keep.has(i + 1)).find((l) => l.length > IDE.EDITOR_COLS && !/^(\$ |\w+[=\-'"(]\*?[>#])/.test(l))
     if (wide) problems.push(`scene ${id}  a console row is longer than ${IDE.EDITOR_COLS} columns — "${wide.slice(0, 40)}…"`)
   }
   for (const n of side)

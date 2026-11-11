@@ -1,7 +1,7 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
 import { ideFrame, lineOf, linesFrom } from '../ide'
 import { grab, output, result } from '../psql'
-import { file, session } from '../spine'
+import { file, session, tree } from '../spine'
 
 // Course 1 — why a database, and first contact. §1–§3 are concept frames; from §4 the IDE frame,
 // every console a replayed psql transcript and every value in a side pane read out of it.
@@ -133,7 +133,7 @@ const F4 = 'start/04-branches.sql'
 const S4 = session(K4)
 const r4 = result(S4, 'start/04-branches.sql')
 const firstTable = ideFrame({
-  model: 'A table is a promise about shape', editor: { file: F4, code: file(K4, F4), highlight: linesFrom(file(K4, F4), 'CREATE TABLE', ');') },
+  model: 'A table is a promise about shape', tree: tree(K4, F4), editor: { file: F4, code: file(K4, F4), highlight: linesFrom(file(K4, F4), 'CREATE TABLE', ');') },
   session: S4,
   side: [
     {
@@ -154,7 +154,7 @@ const K5 = 'start/05-anatomy'
 const F5 = 'start/05-anatomy.sql'
 const S5 = session(K5)
 const anatomy = ideFrame({
-  model: 'Keywords, identifiers, literals', editor: { file: F5, code: file(K5, F5), highlight: linesFrom(file(K5, F5), 'SELECT code', "'2015-01-01'") },
+  model: 'Keywords, identifiers, literals', tree: tree(K5, F5), editor: { file: F5, code: file(K5, F5), highlight: linesFrom(file(K5, F5), 'SELECT code', "'2015-01-01'") },
   session: S5, sessionHighlight: [lineOf(S5, 'ERROR:')],
   side: [
     {
@@ -183,7 +183,7 @@ const anatomy = ideFrame({
 const K6 = 'start/06-psql'
 const S6 = session(K6)
 const psql = ideFrame({
-  model: 'psql, the client; the server answers SQL', editor: { file: F4, code: file(K6, F4), highlight: linesFrom(file(K6, F4), 'CREATE TABLE', ');') },
+  model: 'psql, the client; the server answers SQL', tree: tree(K6), editor: { file: F4, code: file(K6, F4), highlight: linesFrom(file(K6, F4), 'CREATE TABLE', ');') },
   session: S6, sessionHighlight: [lineOf(S6, '=*> INSERT'), lineOf(S6, '=*> ROLLBACK')],
   side: [
     {
@@ -226,7 +226,7 @@ const K7 = 'start/07-errors'
 const S7 = session(K7)
 const state = grab(S7, /^(\d{5})$/m)
 const errors = ideFrame({
-  model: 'An error refuses; a stray quote does not', editor: { file: F4, code: file(K7, F4), highlight: [lineOf(file(K7, F4), 'city ')] },
+  model: 'An error refuses; a stray quote does not', tree: tree(K7), editor: { file: F4, code: file(K7, F4), highlight: [lineOf(file(K7, F4), 'city ')] },
   session: S7, sessionHighlight: [lineOf(S7, "syndica'>"), ...linesFrom(S7, 'ERROR:', 'HINT:')],
   side: [
     {

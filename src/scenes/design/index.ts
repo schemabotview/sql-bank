@@ -1,7 +1,7 @@
 import type { SceneModel } from '@graphlearning/graphl-flow'
 import { ideFrame, lineOf, linesFrom } from '../ide'
 import { result } from '../psql'
-import { file, session } from '../spine'
+import { file, session, tree } from '../spine'
 
 // Course 2 — design the bank. Decisions on paper: nothing here changes `syndica` except §4's sandbox,
 // which is created and dropped on screen. §5 and §6 are concept frames with their lab output inside.
@@ -124,7 +124,7 @@ const F4 = 'design/04-sheet.sql'
 const S4 = session(K4)
 const r4 = result(S4, 'SELECT account_no, holder, email')
 const normalise = ideFrame({
-  model: 'Store each fact once', editor: { file: F4, code: file(K4, F4), highlight: linesFrom(file(K4, F4), "('SY40000013', 'Chloe", "('SY40000014', 'Chloe") },
+  model: 'Store each fact once', tree: tree(K4, F4), editor: { file: F4, code: file(K4, F4), highlight: linesFrom(file(K4, F4), "('SY40000013', 'Chloe", "('SY40000014', 'Chloe") },
   session: S4, sessionHighlight: linesFrom(S4, 'SY40000013 | Chloe', 'SY40000014 | Chloe'),
   side: [
     { type: 'table', id: 'now', title: "Chloe's email, after one UPDATE", tone: 'consume', columns: r4.columns, rows: r4.rows },

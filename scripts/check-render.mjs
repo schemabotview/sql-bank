@@ -197,7 +197,7 @@ try {
       let panes = null
       if (kind) {
         // v2's editor/console split follows the transcript; the work column and the side pane do not move.
-        const names = kind === 'ide' ? ['ide-bench', 'side'] : ['session-a', 'session-b', 'side']
+        const names = kind === 'ide' ? ['explorer', 'side'] : ['session-a', 'session-b', 'side']
         panes = Object.fromEntries(names.map((p) => [p, node(p) && Object.values(R(node(p))).map((v) => Math.round(v))]))
         const pane = R(node('side'))
         const leaves = [...node('side').querySelectorAll(LEAVES)].map(R)

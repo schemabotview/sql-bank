@@ -121,20 +121,20 @@ const paging = sql('query/07-paging', {
   lit: ['posting_id > 9041', 'LIMIT 3'],
   side: [
     {
-      type: 'group', id: 'pages', title: "Tom's statement, 3 lines a page", icon: 'file', tone: 'ingest', dir: 'row', children: [
-        table('p1', 'page 1', { columns: ['posting_id', 'amount'], rows: p1.rows.map((r) => [r[0], r[2]]) }, 'ingest'),
-        table('p2', `page 2: after ${p1.rows.at(-1)![0]}`, { columns: ['posting_id', 'amount'], rows: p2.rows.map((r) => [r[0], r[2]]) }),
+      type: 'group', id: 'pages', bare: true, dir: 'row', children: [
+        table('p1', 'page 1', { columns: ['posting', 'amount'], rows: p1.rows.map((r) => [r[0], r[2]]) }, 'ingest'),
+        table('p2', `page 2: > ${p1.rows.at(-1)![0]}`, { columns: ['posting', 'amount'], rows: p2.rows.map((r) => [r[0], r[2]]) }),
       ],
     },
     {
       type: 'table', id: 'how', title: 'Two ways to ask for page 2', tone: 'neutral', columns: ['', 'OFFSET 3', 'keyset'], rows: [
-        ['asks for', 'skip 3 rows', 'posting_id > 9041'],
-        ['work', 'reads page 1 again', 'starts at page 2'],
-        ['a new row', 'shifts every page', 'moves nothing seen'],
+        ['asks', 'skip 3', '> 9041'],
+        ['work', 'reads page 1', 'from page 2'],
+        ['a new row', 'shifts pages', 'moves nothing'],
       ],
     },
   ],
-  edges: [{ from: 'p1', to: 'p2', label: 'continue' }],
+  edges: [{ from: 'p1', to: 'p2' }],
 })
 
 // §7 — aggregates, GROUP BY, HAVING.

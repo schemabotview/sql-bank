@@ -123,7 +123,7 @@ const audit = sql('change/06-audit', {
         { type: 'item', id: 't3', title: 'INSERT INTO audit.customer_changes', sub: 'old row, new row, who', tone: 'store' },
       ],
     },
-    table('r', 'The audit trail, as recorded', { columns: ['customer', 'was', 'now'], rows: log.rows.map((r) => r.slice(0, 3)) }),
+    table('r', 'The audit trail, as recorded', { columns: ['was', 'now'], rows: log.rows.map((r) => r.slice(1, 3)) }),
   ],
   edges: [{ from: 't1', to: 't2' }, { from: 't2', to: 't3' }],
 })

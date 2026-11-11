@@ -243,3 +243,9 @@ spatial. Candidate follow-up: "Running Syndica in production".
    keep v1's template and their own fit: two 60-column sessions side by side do not fit the grid.
    The spine is unchanged. No narration walked a removed element, so no audio changes; the frames
    changed, so every recording is redone.
+   **2026-11-11, the explorer restored (the owner's call):** spark-ecommerce-analytics' layout —
+   compact explorer 175 (`syndica-db/` up to the step) | editor over a 72-column console | side pane
+   434. The runner's 80-column transcripts are re-wrapped when drawn (psql's own wraps joined back,
+   every row cut at 72); a console that still does not fit folds the middle of its longest result.
+   Side-pane tables were shortened to fit 434 (an email column dropped where the narration does not
+   read it, cells abbreviated); 6.5's highlight covers the WITH stage only. No narration changed.

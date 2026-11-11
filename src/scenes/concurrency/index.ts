@@ -183,7 +183,7 @@ const transfer = sql('concurrency/07-transfer', {
   side: [
     {
       type: 'table', id: 'guards', title: 'Every guard, and what it stops', tone: 'store', columns: ['guard', 'stops'], rows: [
-        ['lock both, lowest first', 'lost updates, deadlocks'],
+        ['lock both, lowest first', 'lost updates'],
         ['check AFTER locking', 'overdrawing'],
         ['request_id UNIQUE', 'a request twice'],
         ['one transaction', 'half a transfer'],

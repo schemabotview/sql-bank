@@ -17,8 +17,8 @@ const inner = sql('combine/01-inner', {
   lit: 'JOIN ref.branches', says: ['Manchester'],
   side: [
     {
-      type: 'group', id: 'match', title: 'Each account finds its branch', icon: 'workflow', tone: 'ingest', dir: 'row', children: [
-        { type: 'table', id: 'a', title: 'core.accounts', columns: ['account_no', 'branch_code'], rows: [{ id: 'r1', cells: ['SY40000013', 'MAN'] }, { id: 'r2', cells: ['SY40000011', 'LDS'] }, { id: 'r3', cells: ['SY40000012', 'BRS'] }] },
+      type: 'group', id: 'match', bare: true, dir: 'row', children: [
+        { type: 'table', id: 'a', title: 'core.accounts', columns: ['account_no', 'branch'], rows: [{ id: 'r1', cells: ['SY40000013', 'MAN'] }, { id: 'r2', cells: ['SY40000011', 'LDS'] }, { id: 'r3', cells: ['SY40000012', 'BRS'] }] },
         { type: 'table', id: 'b', title: 'ref.branches', columns: ['code', 'city'], rows: [{ id: 'man', cells: ['MAN', 'Manchester'] }, { id: 'lds', cells: ['LDS', 'Leeds'] }, { id: 'brs', cells: ['BRS', 'Bristol'] }] },
       ],
     },
@@ -75,7 +75,7 @@ const amplify = sql('combine/04-amplify', {
       type: 'table', id: 'totals', title: 'Total money held, two ways', tone: 'consume', columns: ['summed through', 'total'], rows: [
         { id: 'a', cells: ['accounts', viaA], tone: 'store' },
         { id: 'c', cells: ['customers', viaC], tone: 'consume' },
-        ['difference', (Number(viaC) - Number(viaA)).toFixed(2) + ': account 1013, counted twice'],
+        ['difference', (Number(viaC) - Number(viaA)).toFixed(2) + ': 1013 twice'],
       ],
     },
     {
@@ -102,8 +102,8 @@ const subqueries = sql('combine/05-subqueries', {
     {
       type: 'table', id: 'kinds', title: 'Three places a query can go', tone: 'ingest', columns: ['kind', 'returns', 'sits in'], rows: [
         ['scalar', 'one value', 'WHERE'],
-        ['derived table', 'a table', 'FROM … AS b'],
-        { id: 'lat', cells: ['LATERAL', 'a table per row', 'FROM, using a.*'], tone: 'store' },
+        ['derived', 'a table', 'FROM … AS b'],
+        { id: 'lat', cells: ['LATERAL', 'one per row', 'FROM, uses a'], tone: 'store' },
       ],
     },
     table('r', 'The two latest postings, per account', result(S5, '05-latest.sql')),
@@ -165,13 +165,13 @@ const view = sql('combine/08-view', {
   side: [
     {
       type: 'group', id: 'what', title: 'A view is a named query', icon: 'layers', tone: 'store', dir: 'row', children: [
-        { type: 'item', id: 'q', title: 'SELECT … FROM core.account_balance', sub: 'what Finance writes' },
-        { type: 'item', id: 'v', title: 'the stored query', sub: 'accounts LEFT JOIN postings, summed', icon: 'database' },
+        { type: 'item', id: 'q', title: 'FROM core.account_balance', sub: 'what Finance writes, expanded' },
+        { type: 'item', id: 'v', title: 'the stored query', sub: 'accounts ⟕ postings', icon: 'database' },
       ],
     },
     table('r', 'The three largest current balances', result(S8, 'FROM core.account_balance')),
   ],
-  edges: [{ from: 'q', to: 'v', label: 'expands to' }],
+  edges: [{ from: 'q', to: 'v' }],
 })
 
 export const combineScenes: Record<string, SceneModel> = {

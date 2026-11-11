@@ -46,7 +46,7 @@ const recursive = sql('analyse/02-recursive', {
     },
     table('r', 'Each hop, as the recursion found it', ch),
   ],
-  edges: [{ from: 'a', to: 'b', label: 'hop 1' }, { from: 'b', to: 'c', label: 'hop 2' }],
+  edges: [{ from: 'a', to: 'b' }, { from: 'b', to: 'c' }],
 })
 
 // §3 — windows: the running balance.
@@ -95,7 +95,7 @@ const ranking = sql('analyse/05-ranking', {
   lit: ['rank()', 'row_number()'], says: [dup.rows[0][1]],
   side: [
     table('r', 'Card payments per account: the top 6', { columns: ['account', 'payments', 'rank', 'dense', 'row'], rows: rk.rows.slice(0, 6) }),
-    { type: 'table', id: 'dup', title: 'Duplicates: row_number() > 1 per name', tone: 'consume', columns: dup.columns, rows: dup.rows },
+    { type: 'table', id: 'dup', title: 'Duplicates: row_number() > 1 per name', tone: 'consume', columns: dup.columns.slice(0, 2), rows: dup.rows.map((r) => r.slice(0, 2)) },
   ],
   edges: [{ from: 'r', to: 'dup', label: 'row_number() > 1' }],
 })

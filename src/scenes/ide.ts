@@ -235,8 +235,7 @@ function consoleRows(text: string, show?: [number, number][]): number {
   return rows + (next <= lines.length ? 1 : 0)
 }
 
-/* PORTING */ export function ideFrame(f: IdeFrame): SceneModel { try { return build(f) } catch (e) { console.error('FRAME ' + f.editor.file + ' ' + (e as Error).message); return { nodes: [] } } }
-function build({ model, tree = [], editor, session: transcript, sessionHighlight, sessionShow, side, edges = [] }: IdeFrame): SceneModel {
+export function ideFrame({ model, tree = [], editor, session: transcript, sessionHighlight, sessionShow, side, edges = [] }: IdeFrame): SceneModel {
   const { text: session, span: rowsOfLine } = wrapConsole(transcript)
   const carry = ([a, b]: [number, number]): [number, number] => [rowsOfLine[a - 1][0], rowsOfLine[b - 1][1]]
   sessionShow = sessionShow?.map(carry)

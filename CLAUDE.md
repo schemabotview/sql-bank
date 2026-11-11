@@ -87,16 +87,19 @@ spine/<course>/<NN-step>/
 
 ## Frames
 
-`src/scenes/ide.ts`: `ideFrame` is **IDE frame v2** — one 1344 × 756 grid, one fit: editor over the
-psql console in ONE 760 column (the console's 80 columns: a psql transcript is never re-wrapped; the
-editor soft-wraps past 76) | side pane 574, TITLED with the section's mental model (`model`; `sql()`
-in `section.ts` passes it). No explorer: the editor's tab names the file. The two panes share 26
+`src/scenes/ide.ts`: `ideFrame` is **IDE frame v2** — one 1344 × 756 grid, one fit, in
+spark-ecommerce-analytics' layout (the explorer restored 2026-11-11): compact explorer 175
+(`syndica-db/` up to the step, spine.ts `tree`; `sql()` passes it) | editor over a 72-column psql
+console | side pane 434, TITLED with the section's mental model (`model`). The runner records at 80
+columns; `wrapConsole` joins psql's own 80-column wraps back (not into a `HINT:`/`DETAIL:` row or a
+prompt) and cuts every row at 72 — a typed row cut at 72 is read by graphl-flow's console as a
+command wrapping on; `sessionShow`/`sessionHighlight` name the transcript's rows. The two panes share 26
 rows: the editor keeps room for its highlighted lines (`show` only when they do not fit, and it
 THROWS, naming the scene, when that does not either), the console takes the rest (at most 20) and a
 longer session is folded by `autoShow` — `(n rows)`, then a result's header, then the middle of a
-long typed statement — never retyped. The side pane holds ONE diagram (edges or a plot) and at most
+long typed statement, then the middle of the longest result (`foldLongest`) — never retyped. The side pane holds ONE diagram (edges or a plot) and at most
 one table outside it; no bullets, no notes (check-content), filled ≥ 1/2 (check-render); a table
-there fits ~60 monospace characters a row. `timelineFrame` — session A | session B (60 cols each) |
+there fits ~36 monospace characters a row. `timelineFrame` — session A | session B (60 cols each) |
 side pane — keeps v1's 1736 × 976 template and its OWN fit: two 60-column sessions cannot sit side by
 side on the v2 grid. check-render holds each kind to its own fit. Concept frames (◆) are free-form. Every side pane
 carries a diagram, not bullets. No edges between panes. Never write `x`/`y`.

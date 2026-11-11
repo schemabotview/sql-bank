@@ -18,8 +18,8 @@ const grain = sql('query/01-grain', {
   side: [
     {
       type: 'group', id: 'g', title: 'Same table, two grains', icon: 'layers', tone: 'ingest', dir: 'row', children: [
-        { type: 'item', id: 'g1', title: `${grab(S1, /^ +(\d+)$/m)} rows`, sub: 'SELECT … FROM core.accounts: one row per account', icon: 'table' },
-        { type: 'item', id: 'g2', title: `${result(S1, '01-grain.sql').rows.length} rows`, sub: 'SELECT DISTINCT branch, kind: one row per combination', icon: 'filter', tone: 'store' },
+        { type: 'item', id: 'g1', title: `${grab(S1, /^ +(\d+)$/m)} rows`, sub: 'one per account', icon: 'table' },
+        { type: 'item', id: 'g2', title: `${result(S1, '01-grain.sql').rows.length} rows`, sub: 'DISTINCT: one per combination', icon: 'filter', tone: 'store' },
       ],
     },
     table('r', 'Branch × kind, as returned', result(S1, '01-grain.sql')),

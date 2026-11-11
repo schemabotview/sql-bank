@@ -2,7 +2,7 @@ import type { SceneModel } from '@graphlearning/graphl-flow'
 import { view } from '../fold'
 import { ideFrame, lineOf, linesFrom } from '../ide'
 import { grab, outcomes, output, result } from '../psql'
-import { file, session } from '../spine'
+import { file, session, tree } from '../spine'
 
 // Course 3 — build it, and make it refuse bad data. Every step changes `syndica` for good: tables,
 // keys and rules are added by files in syndica-db/build/, run with \i, and the opening book is
@@ -14,16 +14,16 @@ const K1 = 'build/01-customers', F1 = 'build/01-customers.sql'
 const S1 = session(K1)
 const r1 = result(S1, 'RETURNING customer_id')
 const customers = ideFrame({
-  model: 'Some columns the database fills', editor: { file: F1, code: file(K1, F1), highlight: [lineOf(file(K1, F1), 'IDENTITY'), lineOf(file(K1, F1), 'DEFAULT')],
+  model: 'Some columns the database fills', tree: tree(K1, F1), editor: { file: F1, code: file(K1, F1), highlight: [lineOf(file(K1, F1), 'IDENTITY'), lineOf(file(K1, F1), 'DEFAULT')],
     // frame v2's 72-column console takes more rows: the editor may show just the two lines
     show: [[lineOf(file(K1, F1), 'IDENTITY'), lineOf(file(K1, F1), 'IDENTITY')], [lineOf(file(K1, F1), 'DEFAULT'), lineOf(file(K1, F1), 'DEFAULT')]] },
   session: S1, sessionHighlight: [lineOf(S1, 'RETURNING'), ...linesFrom(S1, 'ERROR:', 'HINT:')],
   side: [
     {
       type: 'table', id: 'cols', title: 'core.customers: who fills each column', tone: 'ingest', columns: ['column', 'filled by'], rows: [
-        { id: 'id', cells: ['customer_id', 'the database: identity'], tone: 'store' },
-        ['full_name, email, phone', 'the INSERT'],
-        { id: 'kyc', cells: ['kyc_status', "the default: 'pending'"], tone: 'store' },
+        { id: 'id', cells: ['customer_id', 'identity'], tone: 'store' },
+        ['full_name …phone', 'the INSERT'],
+        { id: 'kyc', cells: ['kyc_status', 'its DEFAULT'], tone: 'store' },
         ['joined_on', 'the INSERT'],
       ],
     },
@@ -42,7 +42,7 @@ const customers = ideFrame({
 const K2 = 'build/02-keys', F2 = 'build/02-keys.sql'
 const S2 = session(K2)
 const keys = ideFrame({
-  model: 'A key: one name per row, every row', editor: { file: F2, code: file(K2, F2), highlight: [lineOf(file(K2, F2), 'ref.branches ADD PRIMARY KEY')] },
+  model: 'A key: one name per row, every row', tree: tree(K2, F2), editor: { file: F2, code: file(K2, F2), highlight: [lineOf(file(K2, F2), 'ref.branches ADD PRIMARY KEY')] },
   session: S2, sessionHighlight: [lineOf(S2, 'is duplicated'), lineOf(S2, 'already exists')],
   side: [
     {
@@ -68,12 +68,12 @@ const keys = ideFrame({
 const K3 = 'build/03-accounts', F3 = 'build/03-accounts.sql'
 const S3 = session(K3)
 const fk: SceneModel = ideFrame({
-  model: 'A foreign key: only what exists', editor: { file: F3, code: file(K3, F3), show: [[lineOf(file(K3, F3), 'REFERENCES ref.branches'), lineOf(file(K3, F3), 'REFERENCES ref.branches')], [lineOf(file(K3, F3), 'CREATE TABLE core.account_holders'), lineOf(file(K3, F3), 'PRIMARY KEY (account_id, customer_id)')]], highlight: [lineOf(file(K3, F3), 'REFERENCES ref.branches'), lineOf(file(K3, F3), 'PRIMARY KEY (account_id, customer_id)')] },
+  model: 'A foreign key: only what exists', tree: tree(K3, F3), editor: { file: F3, code: file(K3, F3), show: [[lineOf(file(K3, F3), 'REFERENCES ref.branches'), lineOf(file(K3, F3), 'REFERENCES ref.branches')], [lineOf(file(K3, F3), 'CREATE TABLE core.account_holders'), lineOf(file(K3, F3), 'PRIMARY KEY (account_id, customer_id)')]], highlight: [lineOf(file(K3, F3), 'REFERENCES ref.branches'), lineOf(file(K3, F3), 'PRIMARY KEY (account_id, customer_id)')] },
   session: S3, sessionHighlight: [lineOf(S3, 'is not present'), lineOf(S3, 'is referenced from')],
   side: [
     {
-      type: 'group', id: 'links', title: 'What may point at what', icon: 'workflow', tone: 'store', dir: 'row', children: [
-        { type: 'table', id: 'holders', title: 'account_holders', columns: ['column'], rows: [{ id: 'acc', cells: ['account_id'] }, { id: 'cus', cells: ['customer_id'] }] },
+      type: 'group', id: 'links', bare: true, dir: 'row', children: [
+        { type: 'table', id: 'holders', title: 'holders', columns: ['column'], rows: [{ id: 'acc', cells: ['account_id'] }, { id: 'cus', cells: ['customer_id'] }] },
         {
           type: 'group', id: 'targets', bare: true, children: [
             { type: 'table', id: 'accounts', title: 'accounts', columns: ['column'], rows: [{ id: 'id', cells: ['account_id'] }, { id: 'br', cells: ['branch_code'] }] },
@@ -101,7 +101,7 @@ const fk: SceneModel = ideFrame({
 const K4 = 'build/04-rules', F4 = 'build/04-rules.sql'
 const S4 = session(K4)
 const rules = ideFrame({
-  model: 'CHECK refuses only what is false', editor: { file: F4, code: file(K4, F4), ...view(file(K4, F4), 'ALTER TABLE core.accounts', undefined, 0), highlight: [lineOf(file(K4, F4), 'closed_on >= opened_on')] },
+  model: 'CHECK refuses only what is false', tree: tree(K4, F4), editor: { file: F4, code: file(K4, F4), ...view(file(K4, F4), 'ALTER TABLE core.accounts', undefined, 0), highlight: [lineOf(file(K4, F4), 'closed_on >= opened_on')] },
   session: S4, sessionHighlight: [lineOf(S4, 'violates check')],
   side: [
     {
@@ -127,15 +127,15 @@ const K5 = 'build/05-predict', F5 = 'build/05-predict.sql'
 const S5 = session(K5)
 const runs = outcomes(output(S5, 'build/05-predict.sql'))
 if (runs.length !== 6) throw new Error(`build/05: expected 6 outcomes, read ${runs.length}`)
-const records = ['a customer with no phone', 'a customer with no name', 'Amelia again, same email', 'an account in dollars', 'closed before it opened', 'Priya Shah, a second email']
-const ruleOf = (t: string) => t.includes('not-null') ? 'NOT NULL' : t.includes('unique') ? 'UNIQUE (email)' : t.includes('currency') ? 'CHECK (currency)' : t.includes('check') ? 'CHECK (dates)' : '—'
+const records = ['no phone', 'no name', 'Amelia, same email', 'in dollars', 'closed before opened', 'Priya, 2nd email']
+const ruleOf = (t: string) => t.includes('not-null') ? 'NOT NULL' : t.includes('unique') ? 'UNIQUE' : t.includes('currency') ? 'CHECK cur.' : t.includes('check') ? 'CHECK dates' : '—'
 const predict = ideFrame({
-  model: 'Constraints guard each row, not each person', editor: { file: F5, code: file(K5, F5), ...view(file(K5, F5), '-- 1', undefined, 2) },
+  model: 'Constraints guard each row, not each person', tree: tree(K5, F5), editor: { file: F5, code: file(K5, F5), ...view(file(K5, F5), '-- 1', undefined, 2) },
   session: S5,
   side: [
     {
-      type: 'table', id: 'verdicts', title: 'Six records, six verdicts', tone: 'ingest', columns: ['#', 'record', 'rule', 'verdict'],
-      rows: runs.map((r, i) => ({ id: `v${i + 1}`, cells: [String(i + 1), records[i], r.ok ? '—' : ruleOf(r.text), r.ok ? 'accepted' : 'refused'], tone: r.ok ? 'store' as const : 'consume' as const })),
+      type: 'table', id: 'verdicts', title: 'Six records, six verdicts', tone: 'ingest', columns: ['#', 'record', 'verdict'],
+      rows: runs.map((r, i) => ({ id: `v${i + 1}`, cells: [String(i + 1), records[i], r.ok ? 'accepted' : ruleOf(r.text)], tone: r.ok ? 'store' as const : 'consume' as const })),
     },
     {
       type: 'group', id: 'limits', title: 'What no rule caught', icon: 'search', tone: 'consume', children: [
@@ -153,7 +153,7 @@ const S6 = session(K6)
 const copies = output(S6, 'build/06-open.sql').filter((l) => l.startsWith('COPY')).map((l) => l.split(' ')[1])
 const loads = ['customers', 'accounts', 'account_holders', 'transactions', 'postings']
 const opening = ideFrame({
-  model: 'Load a row only after what it points at', editor: { file: F6, code: file(K6, F6), highlight: linesFrom(file(K6, F6), '\\copy core.customers', '\\copy core.postings') },
+  model: 'Load a row only after what it points at', tree: tree(K6, F6), editor: { file: F6, code: file(K6, F6), highlight: linesFrom(file(K6, F6), '\\copy core.customers', '\\copy core.postings') },
   session: S6, sessionHighlight: [lineOf(S6, 'is not present')],
   side: [
     {
@@ -164,7 +164,7 @@ const opening = ideFrame({
     },
     {
       type: 'table', id: 'tried', title: 'Postings first? Refused', tone: 'consume', columns: ['tried', 'result'], rows: [
-        ['\\copy core.postings', grab(S6, /^DETAIL:\s+Key \(txn_id\)=\((\d+)\) is not present/m) + ': no such transaction yet'],
+        ['postings', grab(S6, /^DETAIL:\s+Key \(txn_id\)=\((\d+)\) is not present/m) + ': no such txn yet'],
       ],
     },
   ],
@@ -180,14 +180,14 @@ const S7 = session(K7)
 const dt = result(S7, '\\dt core.*')
 const cols = result(S7, 'SELECT column_name')
 const catalogue = ideFrame({
-  model: 'The schema describes itself', editor: { file: F7, code: file(K7, F7), ...view(file(K7, F7), 'CREATE TABLE core.postings', undefined, 0), highlight: linesFrom(file(K7, F7), 'posting_id', 'amount') },
+  model: 'The schema describes itself', tree: tree(K7, F7), editor: { file: F7, code: file(K7, F7), ...view(file(K7, F7), 'CREATE TABLE core.postings', undefined, 0), highlight: linesFrom(file(K7, F7), 'posting_id', 'amount') },
   session: S7, sessionShow: [[1, 9], [12, 21]],
   side: [
     {
       type: 'group', id: 'how', title: 'Written once, read by anyone', icon: 'database', tone: 'ingest', dir: 'row', children: [
-        { type: 'item', id: 'ddl', title: 'CREATE TABLE', sub: 'the team writes' },
-        { type: 'item', id: 'cat', title: 'the catalogue', sub: 'the server keeps', icon: 'database' },
-        { type: 'item', id: 'read', title: '\\dt, information_schema', sub: 'anyone reads', icon: 'search' },
+        { type: 'item', id: 'ddl', title: 'CREATE TABLE', sub: 'team writes' },
+        { type: 'item', id: 'cat', title: 'catalogue', sub: 'server keeps', icon: 'database' },
+        { type: 'item', id: 'read', title: '\\dt, info_schema', sub: 'anyone reads', icon: 'search' },
       ],
     },
     { type: 'table', id: 'cols', title: 'core.postings, from information_schema', tone: 'store', columns: cols.columns, rows: cols.rows },

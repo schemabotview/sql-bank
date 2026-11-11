@@ -9,10 +9,11 @@ import type { Code, Edge, Group, SceneModel, SceneNode, Tree, TreeEntry } from '
 // IDE frame v2 is graphl-flow 0.11's shared grid — 1344 × 756 at a 1% margin — in
 // spark-ecommerce-analytics' layout (2026-11-11, the explorer restored): compact explorer 175 | a
 // 715 work column of 72 columns | side pane 434, so every IDE frame lands on ONE fit and the explorer
-// and the side pane never move. The runner records psql at 80 columns; the console here is 72, so a
-// result row wider than 72 is cut where a 72-column terminal would wrap it (`wrapConsole`), and a
-// typed statement is left whole for graphl-flow's console to wrap at its `cols`. `sessionShow` and
-// `sessionHighlight` name the transcript's own rows and are carried onto the wrapped ones.
+// and the side pane never move. The runner records psql at 80 columns; the console here is 72, so
+// every row wider than 72 is cut where a 72-column terminal would wrap it (`wrapConsole`): a typed
+// row cut at 72 is read by graphl-flow's console as a command wrapping into the next row.
+// `sessionShow` and `sessionHighlight` name the transcript's own rows and are carried onto the
+// wrapped ones.
 // The editor and the console share ROWS rows: the console takes exactly its rows (folded with
 // `sessionShow`/autoShow to fit), the editor the rest.
 //
@@ -197,33 +198,37 @@ function grow(lines: string[], ranges: [number, number][], room: number): [numbe
   return r
 }
 
-/** A psql prompt row (`syndica=> `, `syndica-> `, `syndica=*> `, `syndica'> `, `$ `): typed, so the
- *  console wraps it itself at its `cols`. */
+/** A psql prompt row (`syndica=> `, `syndica-> `, `syndica=*> `, `syndica'> `, `$ `). */
 const PROMPT = /^(\$ |\w+[=\-'"(]\*?[>#])/
 
 /**
- * The runner's 80-column transcript on the 72-column console: an output row wider than EDITOR_COLS is
- * cut where a 72-column terminal would wrap it, each piece a row; a typed row stays whole (graphl-flow
- * wraps it). `span[i]` is the [first, last] console row of transcript row i + 1, so a fold or a tint
- * found on the transcript lands on the same lines.
+ * The runner's 80-column transcript on the 72-column console, as a 72-column terminal would draw it:
+ * a row psql wrapped at 80 is joined back (a row exactly 80 wide, unless the next is a prompt or a
+ * message of its own, `HINT:` / `DETAIL:`), then every row is cut at EDITOR_COLS. A typed row cut
+ * this way is exactly EDITOR_COLS wide, which graphl-flow's console reads as a command wrapping into
+ * the next row. `span[i]` is the [first, last] console row of transcript row i + 1, so a fold or a
+ * tint found on the transcript lands on the same lines.
  */
 export function wrapConsole(session: string): { text: string; span: [number, number][] } {
+  const rows = trim(session).split('\n')
   const out: string[] = []
   const span: [number, number][] = []
-  for (const row of trim(session).split('\n')) {
+  for (let i = 0; i < rows.length;) {
+    let line = rows[i], j = i
+    while (line.length % 80 === 0 && line.length && j + 1 < rows.length && rows[j + 1] && !PROMPT.test(rows[j + 1]) && !/^[A-Z]+: /.test(rows[j + 1])) line += rows[++j]
     const first = out.length + 1
-    if (PROMPT.test(row) || row.length <= EDITOR_COLS) out.push(row)
-    else out.push(...(row.match(new RegExp(`.{1,${EDITOR_COLS}}`, 'g')) ?? ['']))
-    span.push([first, out.length])
+    out.push(...(line.match(new RegExp(`.{1,${EDITOR_COLS}}`, 'g')) ?? ['']))
+    for (let k = i; k <= j; k++) span.push([first, out.length])
+    i = j + 1
   }
   return { text: out.join('\n'), span }
 }
 
-/** Rows a console draws: its lines (a typed one wraps at EDITOR_COLS), or its `show` ranges with each
+/** Rows a console draws: its lines (wrapConsole already cut them), or its `show` ranges with each
  *  skipped run folded to one row. */
 function consoleRows(text: string, show?: [number, number][]): number {
   const lines = trim(text).split('\n')
-  const tall = (a: number, b: number) => lines.slice(a - 1, b).reduce((n, l) => n + Math.max(1, Math.ceil(l.length / EDITOR_COLS)), 0)
+  const tall = (a: number, b: number) => b - a + 1
   if (!show) return tall(1, lines.length)
   let rows = 0, next = 1
   for (const [a, b] of show) { if (a > next) rows++; rows += tall(a, b); next = b + 1 }

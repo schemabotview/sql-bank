@@ -127,7 +127,7 @@ const normalise = ideFrame({
   model: 'Store each fact once', tree: tree(K4, F4), editor: { file: F4, code: file(K4, F4), highlight: linesFrom(file(K4, F4), "('SY40000013', 'Chloe", "('SY40000014', 'Chloe") },
   session: S4, sessionHighlight: linesFrom(S4, 'SY40000013 | Chloe', 'SY40000014 | Chloe'),
   side: [
-    { type: 'table', id: 'now', title: "Chloe's email, after one UPDATE", tone: 'consume', columns: r4.columns, rows: r4.rows },
+    { type: 'table', id: 'now', title: "Chloe's email, after one UPDATE", tone: 'consume', columns: [r4.columns[0], r4.columns[2]], rows: r4.rows.map((r) => [r[0], r[2]]) },
     {
       type: 'group', id: 'split', title: 'Each fact stored once', icon: 'table', tone: 'store', children: [
         { type: 'table', id: 'h', title: 'account_holders', columns: ['customer', 'account'], rows: [{ id: 'h1', cells: ['Chloe', 'SY40000013'] }, { id: 'h2', cells: ['Marcus', 'SY40000013'] }, { id: 'h3', cells: ['Chloe', 'SY40000014'] }] },

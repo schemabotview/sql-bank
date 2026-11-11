@@ -159,13 +159,13 @@ const anatomy = ideFrame({
   side: [
     {
       type: 'table', id: 'tokens', title: 'The statement, token by token', tone: 'ingest', columns: ['token', 'kind'], rows: [
-        ['SELECT  FROM  WHERE', 'keywords: the grammar'],
-        ['code  city  opened_on', 'identifiers: columns'],
-        ['ref.branches', 'identifier: schema.table'],
+        ['SELECT FROM WHERE', 'keywords'],
+        ['code city opened_on', 'identifiers'],
+        ['ref.branches', 'schema.table'],
         ['<', 'operator'],
-        ["'2015-01-01'", 'literal: a value, in quotes'],
-        [';', 'ends the statement'],
-        ['-- …', 'comment: ignored'],
+        ["'2015-01-01'", 'a literal'],
+        [';', 'ends it'],
+        ['-- …', 'a comment'],
       ],
     },
     {
@@ -189,22 +189,22 @@ const psql = ideFrame({
     {
       type: 'group', id: 'who', title: 'Who answers what you type', icon: 'workflow', tone: 'ingest', dir: 'row', children: [
         {
-          type: 'table', id: 'client', title: 'psql answers', columns: ['you type'], rows: [
+          type: 'table', id: 'client', title: 'psql', columns: ['you type'], rows: [
             { id: 'd', cells: ['\\d ref.branches'] }, { id: 'q', cells: ['\\q  \\i  \\x'] },
           ],
         },
         {
-          type: 'table', id: 'server', title: 'the server answers', tone: 'store', columns: ['what arrives'], rows: [
-            { id: 'cat', cells: ['catalogue queries'] }, { id: 'sql', cells: ['SQL: BEGIN, INSERT…'] },
+          type: 'table', id: 'server', title: 'the server', tone: 'store', columns: ['receives'], rows: [
+            { id: 'cat', cells: ['catalogue SQL'] }, { id: 'sql', cells: ['your SQL'] },
           ],
         },
       ],
     },
     {
       type: 'table', id: 'prompts', title: 'The prompt tells you the state', tone: 'neutral', columns: ['prompt', 'means'], rows: [
-        ['syndica=>', 'ready for a new statement'],
-        ['syndica->', 'the statement goes on'],
-        ["syndica(>  syndica'>", 'inside brackets / a quote'],
+        ['syndica=>', 'ready'],
+        ['syndica->', 'statement goes on'],
+        ["syndica(>  '>", 'in ( or a quote'],
         { id: 'tx', cells: ['syndica=*>', 'inside a transaction'], tone: 'store' },
         { id: 'fail', cells: ['syndica=!>', 'the transaction failed'], tone: 'consume' },
         ['syndica=#', 'a superuser'],
@@ -218,7 +218,7 @@ const psql = ideFrame({
       ],
     },
   ],
-  edges: [{ from: 'client.d', to: 'server.cat', label: 'becomes' }, { from: 'b', to: 'i' }, { from: 'i', to: 'r' }],
+  edges: [{ from: 'client.d', to: 'server.cat' }, { from: 'b', to: 'i' }, { from: 'i', to: 'r' }],
 })
 
 // §7 — the first errors.
@@ -231,11 +231,11 @@ const errors = ideFrame({
   side: [
     {
       type: 'table', id: 'parts', title: 'Anatomy of an error', tone: 'consume', columns: ['part', 'tells you'], rows: [
-        ['ERROR:', 'the statement was refused; nothing changed'],
-        ['LINE 1:', 'the line it stopped on'],
-        ['^', 'where in the line'],
-        ['HINT:', "the server's best guess at the fix"],
-        { id: 'code', cells: [`SQLSTATE ${state}`, 'the code a program checks'], tone: 'store' },
+        ['ERROR:', 'refused; nothing changed'],
+        ['LINE 1:', 'where it stopped'],
+        ['^', 'the spot'],
+        ['HINT:', "the server's guess"],
+        { id: 'code', cells: [`SQLSTATE ${state}`, 'for programs'], tone: 'store' },
       ],
     },
     {

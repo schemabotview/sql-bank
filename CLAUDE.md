@@ -24,6 +24,9 @@ every frame looked at. No audio yet (narration is text).
 
 **2026-11-09: IDE frame v2** (COURSE-PLAN Decision 5): all 52 IDE sections on graphl-flow 0.11's
 shared grid; the 4 timeline frames and the concept frames unchanged. No narration changed.
+2026-11-12: every course re-recorded at 4K on v2 (segment cache and `scripts/out/` cleared first:
+the cache's fingerprint covers audio and encoding, not the scene, so a frame change needs
+`--force` or an empty cache) and the film re-cut, 1:28:44.
 
 Things learned while authoring, now rules:
 - PostgreSQL 18's `EXPLAIN ANALYZE` includes BUFFERS by default; the hit/read split depends on the
